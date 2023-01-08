@@ -12,28 +12,28 @@ class AppHeader extends React.Component {
     render() {
 
         return (
-            <header className="mt-10 pt-4 pb-4">
+            <header className="pt-4 pb-4">
                 <nav className={appHeaderStyles.menu}>
                     <ul>
-                        <li className="text text_type_main-default mr-2 pl-5 pr-5">
+                        <li className="text text_type_main-default">
                             <BurgerIcon type="primary" />
-                            <span className="ml-2">Конструктор</span>
+                            <span>Конструктор</span>
                         </li>
-                        <li className="text text_type_main-default text_color_inactive pl-5 pr-5">
+                        <li className="text text_type_main-default text_color_inactive">
                             <ListIcon type="secondary" />
-                            <span className="ml-2">Лента заказов</span>
+                            <span>Лента заказов</span>
                         </li>
                     </ul>
                 </nav>
-                <Logo />
                 <nav className={appHeaderStyles.menu}>
                     <ul>
-                        <li className="text text_type_main-default text_color_inactive pl-5 pr-5">
+                        <li className="text text_type_main-default text_color_inactive">
                             <ProfileIcon type="secondary" />
-                            <span className="ml-2">Конструктор</span>
+                            <span>Личный кабинет</span>
                         </li>
                     </ul>
                 </nav>
+                <a href="/"><Logo /></a>
             </header>
         );
 

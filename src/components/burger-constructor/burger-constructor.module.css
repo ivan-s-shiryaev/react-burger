@@ -1,0 +1,69 @@
+ul.container {
+    display: flex;
+    flex-direction: column;
+    padding: 0 14px 0 16px;
+    list-style-type: none;
+}
+
+ul.container:first-child {
+    margin-top: 100px;
+}
+
+ul.container.scroll {
+    margin: 0;
+    padding: 0 6px 0 16px;
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+    scrollbar-color: #8585AD #2F2F37;
+}
+
+ul.container.scroll::-webkit-scrollbar {
+    width: 8px;
+}
+
+ul.container.scroll::-webkit-scrollbar-track {
+    background: #2F2F37;
+}
+  
+ul.container.scroll::-webkit-scrollbar-thumb {
+    background: #8585AD;
+}
+
+ul.container > li {
+    position: relative;
+    padding: 0 0 0 32px;
+}
+
+ul.container > li:last-child {
+    margin-bottom: 0;
+}
+
+ul.container > li > span {
+    position: absolute;
+    display: flex;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 100%;
+    align-items: center;
+    cursor: row-resize;
+}
+
+ul.container > li > div {
+    max-width: none;
+    padding: 16px 32px 16px 24px;
+    background-color: #1c1c21;
+    /* border: none;
+    background: none; */
+}
+
+span.total {
+    display: flex;
+    align-items: center;
+}
+
+span.total > svg {
+    width: 33px;
+    height: 33px;
+    margin-left: 12px;
+}

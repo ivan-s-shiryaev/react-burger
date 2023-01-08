@@ -1,0 +1,70 @@
+div.container {
+    display: flex;
+    flex-direction: column;
+    margin: 40px 0 0;
+    padding: 0 6px 0 0;
+    overflow-y: auto;
+    scrollbar-gutter: stable;
+    scrollbar-color: #8585AD #2F2F37;
+}
+
+div.container::-webkit-scrollbar {
+    width: 8px;
+}
+
+div.container::-webkit-scrollbar-track {
+    background: #2F2F37;
+    margin-bottom: 52px;
+}
+  
+div.container::-webkit-scrollbar-thumb {
+    background: #8585AD;
+}
+
+div.container > ul {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-column-gap: 24px;
+    grid-row-gap: 32px;
+    margin: 24px 0 40px 16px;
+    padding: 0;
+    list-style-type: none;
+}
+
+div.container > ul > li {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    cursor: pointer;
+}
+
+div.container > ul > li > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+div.container > ul > li > div > img {
+    width: 240px;
+    height: 120px;
+}
+
+div.container > ul > li > div > span {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin: 4px 0;
+}
+div.container > ul > li > div > span > svg {
+    margin: 0 0 0 8px;
+}
+
+div.container > ul > li > h3 {
+    min-height: 48px;
+    font-size: 16px;
+    text-align: center;
+}
