@@ -1,4 +1,6 @@
-import React from 'react';
+import React, {
+    useState
+} from 'react';
 import PropTypes from 'prop-types';
 
 import {
@@ -9,24 +11,17 @@ import BurgerIngredients from '../burger-ingredients/burger-ingredients'
 import BurgerConstructor from '../burger-constructor/burger-constructor'
 import appStyles from './app.module.css';
 
-class App extends React.Component {
+const App = props => {
 
-    constructor(props) {
+    const [order, setOrder] = useState({
+        locked_not: ['60666c42cc7b410027a1a9b9', '60666c42cc7b410027a1a9b4', '60666c42cc7b410027a1a9bc'],
+        locked_top: ['60666c42cc7b410027a1a9b1'],
+        locked_bottom: ['60666c42cc7b410027a1a9b1'],
+    });
 
-        super(props);
-        this.state = {
-            order: {
-                locked_not: ['60666c42cc7b410027a1a9b9', '60666c42cc7b410027a1a9b4', '60666c42cc7b410027a1a9bc'],
-                locked_top: ['60666c42cc7b410027a1a9b1'],
-                locked_bottom: ['60666c42cc7b410027a1a9b1'],
-            },
-        }
+    const getDataIgredients = () => {
 
-    }
-
-    getDataIgredients = () => {
-
-        let result = this.props.ingredients.reduce(
+        let result = props.ingredients.reduce(
             (accumulator, value) => {
                 if (!Array.isArray(accumulator[value.type])) accumulator[value.type] = [];
                 accumulator[value.type].push({
@@ -34,7 +29,7 @@ class App extends React.Component {
                     name: value.name,
                     price: value.price,
                     image_large: value.image_large,
-                    count: this.countConstructorItem(value._id),
+                    count: countConstructorItem(value._id),
                 });
                 return accumulator;
             },
@@ -45,14 +40,14 @@ class App extends React.Component {
 
     };
 
-    getDataConstructor = () => {
+    const getDataConstructor = () => {
 
         let result = {};
 
-        Object.keys(this.state.order).forEach(name => {
+        Object.keys(order).forEach(name => {
             const list = [];
-            this.state.order[name].forEach(id => {
-                const item = this.props.ingredients.find(value => value._id === id);
+            order[name].forEach(id => {
+                const item = props.ingredients.find(value => value._id === id);
                 if (item) list.push({
                     _id: item._id,
                     name: item.name,
@@ -67,12 +62,12 @@ class App extends React.Component {
 
     };
 
-    countConstructorItem = (id) => {
+    const countConstructorItem = (id) => {
 
         let result = 0;
 
-        Object.keys(this.state.order).forEach(name => {
-            this.state.order[name].forEach(item => {
+        Object.keys(order).forEach(name => {
+            order[name].forEach(item => {
                 if (item === id) ++result;
             });
         });
@@ -81,13 +76,13 @@ class App extends React.Component {
 
     };
 
-    countConstructorTotal = () => {
+    const countConstructorTotal = () => {
 
         let result = 0;
 
-        Object.keys(this.state.order).forEach(name => {
-            this.state.order[name].forEach(id => {
-                const item = this.props.ingredients.find(value => value._id === id);
+        Object.keys(order).forEach(name => {
+            order[name].forEach(id => {
+                const item = props.ingredients.find(value => value._id === id);
                 if (item) result += item.price;
             });
         });
@@ -96,65 +91,47 @@ class App extends React.Component {
 
     };
 
-    addConstructorItem = (id) => {
+    const addConstructorItem = (id) => {
 
-        this.setState(prevState => {
-
-            return {
-                ...prevState,
-                order: {
-                    ...prevState.order,
-                    locked_not: [
-                        id,
-                        ...prevState.order.locked_not,
-                    ],
-                },
-            };
-
+        setOrder({
+            ...order,
+            locked_not: [
+                id,
+                ...order.locked_not,
+            ],
         });
 
     };
 
-    removeConstructorItem = (id) => {
+    const removeConstructorItem = (id) => {
 
-        this.setState(prevState => {
+        const list = [...order.locked_not];
+        const index = list.findIndex(value => value === id);
 
-            const list = [...prevState.order.locked_not];
-            const index = list.findIndex(value => value === id);
+        if (index > -1) list.splice(index, 1);
 
-            if (index > -1) list.splice(index, 1);
-
-            return {
-                ...prevState,
-                order: {
-                    ...prevState.order,
-                    locked_not: list,
-                },
-            };
-
+        setOrder({
+            ...order,
+            locked_not: list,
         });
 
     };
 
 
-    render() {
-
-        return (
-            <React.Fragment>
-                <AppHeader />
-                <main className={appStyles.home}>
-                    <article>
-                        <h1 className="text text_type_main-large mt-10 mb-5">Соберите бургер</h1>
-                        <BurgerIngredients getData={this.getDataIgredients} addIngredient={this.addConstructorItem} />
-                    </article>
-                    <aside>
-                        <BurgerConstructor getData={this.getDataConstructor} removeIngredient={this.removeConstructorItem} getTotal={this.countConstructorTotal} />
-                    </aside>
-                </main>
-            </React.Fragment>
-        );
-
-    }
+    return (
+        <React.Fragment>
+            <AppHeader />
+            <main className={appStyles.home}>
+                <article>
+                    <h1 className="text text_type_main-large mt-10 mb-5">Соберите бургер</h1>
+                    <BurgerIngredients getData={getDataIgredients} addIngredient={addConstructorItem} />
+                </article>
+                <aside>
+                    <BurgerConstructor getData={getDataConstructor} removeIngredient={removeConstructorItem} getTotal={countConstructorTotal} />
+                </aside>
+            </main>
+        </React.Fragment>
+    );
 
 }
 
