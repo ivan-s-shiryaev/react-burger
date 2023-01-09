@@ -1,10 +1,12 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {
     Button,
     ConstructorElement,
     CurrencyIcon,
     DragIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
+
 import burgerConstructorStyles from './burger-constructor.module.css';
 
 class BurgerConstructor extends React.Component {
@@ -98,5 +100,11 @@ class BurgerConstructor extends React.Component {
     }
 
 }
+
+BurgerConstructor.propTypes = {
+    getData: PropTypes.func.isRequired,
+    getTotal: PropTypes.func.isRequired,
+    removeIngredient: PropTypes.func.isRequired,
+};
 
 export default BurgerConstructor;

@@ -30,23 +30,29 @@ header > nav.menu > ul {
 }
 
 header > nav.menu > ul > li {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
     height: 56px;
     margin: 0 8px 0 0;
-    padding: 0 20px;
+    padding: 0;
     border-radius: 40px;
-    white-space: nowrap;
-    cursor: pointer;
-    overflow: hidden;
 }
 
 header > nav.menu > ul > li:last-child {
     margin-right: 0;
 }
 
-header > nav.menu > ul > li > span {
+header > nav.menu > ul > li > a {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    padding: 0 20px;
+    text-decoration: none;
+    color: inherit;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+header > nav.menu > ul > li > a > span {
     margin: 0 0 0 8px;
 }

@@ -1,25 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import appStyles from './app.module.css';
+import {
+    DATA_INGREDIENT_PROPTYPES,
+} from '../../constants';
 import AppHeader from '../app-header/app-header';
 import BurgerIngredients from '../burger-ingredients/burger-ingredients'
 import BurgerConstructor from '../burger-constructor/burger-constructor'
-
-const ingredientPropTypes = PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired,
-    proteins: PropTypes.number.isRequired,
-    fat: PropTypes.number.isRequired,
-    carbohydrates: PropTypes.number.isRequired,
-    calories: PropTypes.number.isRequired,
-    price: PropTypes.number.isRequired,
-    image: PropTypes.string.isRequired,
-    image_mobile: PropTypes.string.isRequired,
-    image_large: PropTypes.string.isRequired,
-    __v: PropTypes.number.isRequired,
-});
+import appStyles from './app.module.css';
 
 class App extends React.Component {
 
@@ -38,18 +26,20 @@ class App extends React.Component {
 
     getDataIgredients = () => {
 
-        let result = {};
-        
-        this.props.ingredients.forEach(value => {
-            if (!Array.isArray(result[value.type])) result[value.type] = [];
-            result[value.type].push({
-                _id: value._id,
-                name: value.name,
-                price: value.price,
-                image_large: value.image_large,
-                count: this.countConstructorItem(value._id),
-            });
-        });
+        let result = this.props.ingredients.reduce(
+            (accumulator, value) => {
+                if (!Array.isArray(accumulator[value.type])) accumulator[value.type] = [];
+                accumulator[value.type].push({
+                    _id: value._id,
+                    name: value.name,
+                    price: value.price,
+                    image_large: value.image_large,
+                    count: this.countConstructorItem(value._id),
+                });
+                return accumulator;
+            },
+            {}
+        );
 
         return result;
 
@@ -149,7 +139,6 @@ class App extends React.Component {
 
     render() {
 
-        // console.log(this.state);
         return (
             <React.Fragment>
                 <AppHeader />
@@ -170,7 +159,7 @@ class App extends React.Component {
 }
 
 App.propTypes = {
-    ingredients: PropTypes.arrayOf(ingredientPropTypes).isRequired,
+    ingredients: PropTypes.arrayOf(DATA_INGREDIENT_PROPTYPES.isRequired).isRequired,
 };
 
 export default App;

@@ -16,20 +16,26 @@ class AppHeader extends React.Component {
                 <nav className={appHeaderStyles.menu}>
                     <ul>
                         <li className="text text_type_main-default">
-                            <BurgerIcon type="primary" />
-                            <span>Конструктор</span>
+                            <a href="/">
+                                <BurgerIcon type="primary" />
+                                <span>Конструктор</span>
+                            </a>
                         </li>
                         <li className="text text_type_main-default text_color_inactive">
-                            <ListIcon type="secondary" />
-                            <span>Лента заказов</span>
+                            <a href="/">
+                                <ListIcon type="secondary" />
+                                <span>Лента заказов</span>
+                            </a>
                         </li>
                     </ul>
                 </nav>
                 <nav className={appHeaderStyles.menu}>
                     <ul>
                         <li className="text text_type_main-default text_color_inactive">
-                            <ProfileIcon type="secondary" />
-                            <span>Личный кабинет</span>
+                            <a href="/">
+                                <ProfileIcon type="secondary" />
+                                <span>Личный кабинет</span>
+                            </a>
                         </li>
                     </ul>
                 </nav>
