@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import {
     Button,
     ConstructorElement,
@@ -11,15 +11,13 @@ import burgerConstructorStyles from './burger-constructor.module.css';
 
 const BurgerConstructor = props => {
 
-    const data = props.getData();
-
     return (
         <React.Fragment>
             {
-                data['locked_top'].length > 0 ? (
+                props.data['locked_top'].length > 0 ? (
                     <ul className={burgerConstructorStyles.container + " mb-4"} style={{ marginTop: 0 }}>
                         {
-                            data['locked_top'].map((value, index) => {
+                            props.data['locked_top'].map((value, index) => {
                                 return (
                                     <li className="mb-4" key={[value._id, index].join('_')}>
                                         <ConstructorElement
@@ -37,10 +35,10 @@ const BurgerConstructor = props => {
                 ) : null
             }
             {
-                data['locked_not'].length > 0 ? (
+                props.data['locked_not'].length > 0 ? (
                     <ul className={[burgerConstructorStyles.container, burgerConstructorStyles.scroll].join(' ')}>
                         {
-                            data['locked_not'].map((value, index) => {
+                            props.data['locked_not'].map((value, index) => {
                                 return (
                                     <li className="mb-4" key={[value._id, index].join('_')}>
                                         <ConstructorElement
@@ -59,15 +57,15 @@ const BurgerConstructor = props => {
                 ) : null
             }
             {
-                data['locked_bottom'].length > 0 ? (
+                props.data['locked_bottom'].length > 0 ? (
                     <ul className={burgerConstructorStyles.container + " mt-4"} style={{ marginBottom: 0 }}>
                         {
-                            data['locked_bottom'].map((value, index) => {
+                            props.data['locked_bottom'].map((value, index) => {
                                 return (
                                     <li className="mb-4" key={[value._id, index].join('_')}>
                                         <ConstructorElement 
                                             isLocked={true}
-                                            type={index === data['locked_bottom'].length - 1 ? 'bottom' : undefined}
+                                            type={index === props.data['locked_bottom'].length - 1 ? 'bottom' : undefined}
                                             text={[value.name, '(низ)'].join(' ')}
                                             price={value.price}
                                             thumbnail={value.image}
@@ -97,10 +95,10 @@ const BurgerConstructor = props => {
 
 }
 
-BurgerConstructor.propTypes = {
-    getData: PropTypes.func.isRequired,
-    getTotal: PropTypes.func.isRequired,
-    removeIngredient: PropTypes.func.isRequired,
-};
+// BurgerConstructor.propTypes = {
+//     getData: PropTypes.func.isRequired,
+//     getTotal: PropTypes.func.isRequired,
+//     removeIngredient: PropTypes.func.isRequired,
+// };
 
 export default BurgerConstructor;

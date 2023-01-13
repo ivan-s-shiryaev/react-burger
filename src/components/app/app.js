@@ -1,10 +1,9 @@
-import React, {
-    useState
-} from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
+// import PropTypes from 'prop-types';
 
 import {
-    DATA_INGREDIENT_PROPTYPES,
+    DATA_INGREDIENT_URL,
+    // DATA_INGREDIENT_PROPTYPES,
 } from '../../constants';
 import AppHeader from '../app-header/app-header';
 import BurgerIngredients from '../burger-ingredients/burger-ingredients'
@@ -13,13 +12,23 @@ import appStyles from './app.module.css';
 
 const App = props => {
 
-    const [order, setOrder] = useState({
-        locked_not: ['60666c42cc7b410027a1a9b9', '60666c42cc7b410027a1a9b4', '60666c42cc7b410027a1a9bc'],
-        locked_top: ['60666c42cc7b410027a1a9b1'],
-        locked_bottom: ['60666c42cc7b410027a1a9b1'],
+    const [ingredients, setIngredients] = React.useState([]);
+    const [order, setOrder] = React.useState({
+        locked_not: ['60d3b41abdacab0026a733ce', '60d3b41abdacab0026a733c9', '60d3b41abdacab0026a733d1'],
+        locked_top: ['60d3b41abdacab0026a733c6'],
+        locked_bottom: ['60d3b41abdacab0026a733c6'],
     });
 
-    const getDataIgredients = () => {
+    React.useEffect(() => {
+        //TODO: try .. catch
+        (async () => {
+            const response = await fetch(DATA_INGREDIENT_URL);
+            const content = await response.json();
+            setIngredients(content.data);
+        })();
+    }, []);
+
+    const getDataIgredient = () => {
 
         let result = props.ingredients.reduce(
             (accumulator, value) => {
@@ -44,10 +53,11 @@ const App = props => {
 
         let result = {};
 
+
         Object.keys(order).forEach(name => {
             const list = [];
             order[name].forEach(id => {
-                const item = props.ingredients.find(value => value._id === id);
+                const item = ingredients.find(value => value._id === id);
                 if (item) list.push({
                     _id: item._id,
                     name: item.name,
@@ -124,10 +134,10 @@ const App = props => {
             <main className={appStyles.home}>
                 <article>
                     <h1 className="text text_type_main-large mt-10 mb-5">Соберите бургер</h1>
-                    <BurgerIngredients getData={getDataIgredients} addIngredient={addConstructorItem} />
+                    <BurgerIngredients data={getDataIgredient()} addIngredient={addConstructorItem} />
                 </article>
                 <aside>
-                    <BurgerConstructor getData={getDataConstructor} removeIngredient={removeConstructorItem} getTotal={countConstructorTotal} />
+                    <BurgerConstructor data={getDataConstructor()} removeIngredient={removeConstructorItem} getTotal={countConstructorTotal} />
                 </aside>
             </main>
         </React.Fragment>
@@ -135,8 +145,9 @@ const App = props => {
 
 }
 
-App.propTypes = {
-    ingredients: PropTypes.arrayOf(DATA_INGREDIENT_PROPTYPES.isRequired).isRequired,
-};
+//TODO: PropTypes
+// App.propTypes = {
+//     ingredients: PropTypes.arrayOf(DATA_INGREDIENT_PROPTYPES.isRequired).isRequired,
+// };
 
 export default App;

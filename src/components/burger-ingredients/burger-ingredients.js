@@ -1,25 +1,40 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import {
     Counter,
     CurrencyIcon,
     Tab,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 
+import burgerIngredientsStyles from './burger-ingredients.module.css';
+import Modal from '../modal/modal';
 import {
     getIngredientCategoryTitle,
-} from '../../utils'
-import burgerIngredientsStyles from './burger-ingredients.module.css';
+} from '../../utils';
 
 const BurgerIngredients = props => {
 
-    const data = props.getData();
+    const [modal, setModal] = React.useState(false);
+
+    const handleModalShow = event => {
+
+        event.preventDefault();
+        event.stopPropagation();
+        setModal(true);
+
+    };
+
+    const handleModalHide = event => {
+
+        setModal(false);
+
+    };
 
     return (
         <React.Fragment>
             <div style={{ display: 'flex' }}>
                 {
-                    Object.keys(data).map((name, id) => (
+                    Object.keys(props.data).map((name, id) => (
                             <Tab value={name} active={id === 0} key={name}>{getIngredientCategoryTitle(name)}</Tab>
                         )
                     )
@@ -27,20 +42,16 @@ const BurgerIngredients = props => {
             </div>
             <div className={burgerIngredientsStyles.container}>
                 {
-                    Object.keys(data).map(name => {
+                    Object.keys(props.data).map(name => {
                             return (
                                 <React.Fragment key={name}>
                                     <h2 className="text text_type_main-medium">{getIngredientCategoryTitle(name)}</h2>
                                     <ul>
                                     {
-                                        data[name].map(item => {
+                                        props.data[name].map(item => {
                                                 return (
                                                     <li key={item._id}>
-                                                        <a href="/" onClick={
-                                                            (event) => {
-                                                                event.preventDefault();
-                                                                props.addIngredient(item._id);
-                                                        }}>
+                                                        <a href="/" onClick={handleModalShow}>
                                                             {item.count > 0 ? (<Counter count={item.count} size="default" />) : null }
                                                             <div>
                                                                 <img src={item.image_large} alt={item.name} />
@@ -63,14 +74,20 @@ const BurgerIngredients = props => {
                     )
                 }
             </div>
+            {modal && (
+                <Modal header="Детали ингредиента" close={handleModalHide}>
+                    !!!
+                </Modal>
+            )}
         </React.Fragment>
     );
 
 }
 
-BurgerIngredients.propTypes = {
-    getData: PropTypes.func.isRequired,
-    addIngredient: PropTypes.func.isRequired,
-};
+//TODO: PropTypes
+// BurgerIngredients.propTypes = {
+//     getData: PropTypes.func.isRequired,
+//     addIngredient: PropTypes.func.isRequired,
+// };
 
 export default BurgerIngredients;

@@ -3,8 +3,13 @@ body {
     height: 100%;
 }
 
-#root {
+#root-app,
+#root-modal {
     overflow: auto;
+}
+
+#root-modal {
+  position: absolute;
 }
 
 body {

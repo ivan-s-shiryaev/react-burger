@@ -5,7 +5,7 @@ import appDataIngredients from './utils/data.js';
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
+  document.getElementById('root-app') as HTMLElement
 );
 root.render(
   <React.StrictMode>

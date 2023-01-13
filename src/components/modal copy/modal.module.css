@@ -1,0 +1,19 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 720px;
+    height: auto;
+    margin: auto;
+    box-sizing: border-box;
+    border-radius: 40px;
+    background: #1c1c21;
+}
+
+.header {
+    margin: 0;
+}
