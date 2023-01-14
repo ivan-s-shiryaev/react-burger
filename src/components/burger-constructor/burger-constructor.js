@@ -41,11 +41,11 @@ const BurgerConstructor = (props) => {
                         {
                             props.data['locked_top'].map((value, index) => {
                                 return (
-                                    <li className="mb-4" key={[value._id, index].join('_')}>
+                                    <li className="mb-4" key={`${value._id}_${index}`}>
                                         <ConstructorElement
                                             isLocked={true}
                                             type={index === 0 ? 'top' : undefined}
-                                            text={[value.name, '(верх)'].join(' ')}
+                                            text={`${value.name} (верх)`}
                                             price={value.price}
                                             thumbnail={value.image}
                                             />
@@ -58,11 +58,11 @@ const BurgerConstructor = (props) => {
             }
             {
                 props.data['locked_not'].length > 0 ? (
-                    <ul className={[burgerConstructorStyles.container, burgerConstructorStyles.scroll].join(' ')}>
+                    <ul className={`${burgerConstructorStyles.container} ${burgerConstructorStyles.scroll}`}>
                         {
                             props.data['locked_not'].map((value, index) => {
                                 return (
-                                    <li className="mb-4" key={[value._id, index].join('_')}>
+                                    <li className="mb-4" key={`${value._id}_${index}`}>
                                         <ConstructorElement
                                             isLocked={false}
                                             text={value.name}
@@ -84,11 +84,11 @@ const BurgerConstructor = (props) => {
                         {
                             props.data['locked_bottom'].map((value, index) => {
                                 return (
-                                    <li className="mb-4" key={[value._id, index].join('_')}>
+                                    <li className="mb-4" key={`${value._id}_${index}`}>
                                         <ConstructorElement 
                                             isLocked={true}
                                             type={index === props.data['locked_bottom'].length - 1 ? 'bottom' : undefined}
-                                            text={[value.name, '(низ)'].join(' ')}
+                                            text={`${value.name} (низ)`}
                                             price={value.price}
                                             thumbnail={value.image}
                                             />
