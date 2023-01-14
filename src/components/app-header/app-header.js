@@ -7,7 +7,7 @@ import {
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import appHeaderStyles from './app-header.module.css';
 
-const AppHeader = props => {
+const AppHeader = () => {
 
     return (
         <header className="pt-4 pb-4">

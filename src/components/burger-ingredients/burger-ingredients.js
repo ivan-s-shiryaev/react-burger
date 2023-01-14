@@ -1,34 +1,46 @@
 import React from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import {
     Counter,
     CurrencyIcon,
     Tab,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 
-import burgerIngredientsStyles from './burger-ingredients.module.css';
-import Modal from '../modal/modal';
+import {
+    DATA_INGREDIENT_PROPTYPES,
+} from '../../constants';
 import {
     getIngredientCategoryTitle,
 } from '../../utils';
+import burgerIngredientsStyles from './burger-ingredients.module.css';
+import Modal from '../modal/modal';
+import IngredientDetails from '../ingredient-details/ingredient-details';
 
-const BurgerIngredients = props => {
+const BurgerIngredients = (props) => {
 
-    const [modal, setModal] = React.useState(false);
+    const [ingredient, setIngredient] = React.useState(null);
 
-    const handleModalShow = event => {
+    const handleIngredientClick = React.useCallback(
+        (item) => (event) => {
 
-        event.preventDefault();
-        event.stopPropagation();
-        setModal(true);
+            event.preventDefault();
+            event.stopPropagation();
+    
+            setIngredient(item);
+            props.handleModalShow();
+    
+        }
+        , [props]
+    );
 
-    };
+    const handleModalClose = React.useCallback(
+        () => {
 
-    const handleModalHide = event => {
+            setIngredient(null);
+            props.handleModalHide();
 
-        setModal(false);
-
-    };
+        }, [props]
+    );
 
     return (
         <React.Fragment>
@@ -51,7 +63,7 @@ const BurgerIngredients = props => {
                                         props.data[name].map(item => {
                                                 return (
                                                     <li key={item._id}>
-                                                        <a href="/" onClick={handleModalShow}>
+                                                        <a href="/" onClick={handleIngredientClick(item)}>
                                                             {item.count > 0 ? (<Counter count={item.count} size="default" />) : null }
                                                             <div>
                                                                 <img src={item.image_large} alt={item.name} />
@@ -74,9 +86,9 @@ const BurgerIngredients = props => {
                     )
                 }
             </div>
-            {modal && (
-                <Modal header="Детали ингредиента" close={handleModalHide}>
-                    !!!
+            {props.modal && ingredient && (
+                <Modal header="Детали ингредиента" handleClose={handleModalClose}>
+                    <IngredientDetails {...ingredient} />
                 </Modal>
             )}
         </React.Fragment>
@@ -84,10 +96,8 @@ const BurgerIngredients = props => {
 
 }
 
-//TODO: PropTypes
-// BurgerIngredients.propTypes = {
-//     getData: PropTypes.func.isRequired,
-//     addIngredient: PropTypes.func.isRequired,
-// };
+BurgerIngredients.propTypes = {
+    data: PropTypes.objectOf(PropTypes.arrayOf(DATA_INGREDIENT_PROPTYPES.isRequired).isRequired).isRequired,
+};
 
 export default BurgerIngredients;

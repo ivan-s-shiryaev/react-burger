@@ -1,5 +1,5 @@
 import React from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import {
     Button,
     ConstructorElement,
@@ -7,9 +7,31 @@ import {
     DragIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 
+import {
+    DATA_CONSTRUCTOR_PROPTYPES,
+} from '../../constants';
 import burgerConstructorStyles from './burger-constructor.module.css';
+import Modal from '../modal/modal';
+import OrderDetails from '../order-details/order-details'
 
-const BurgerConstructor = props => {
+const BurgerConstructor = (props) => {
+
+    const total = props.getTotal();
+
+    const handleCheckoutClick = (event) => {
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        props.handleModalShow();
+
+    };
+
+    const handleModalClose = () => {
+
+        props.handleModalHide();
+
+    };
 
     return (
         <React.Fragment>
@@ -85,20 +107,29 @@ const BurgerConstructor = props => {
                 margin: '40px 16px 52px 0',
             }}>
                 <span className={burgerConstructorStyles.total + " text text_type_digits-medium mr-10"}>
-                    {props.getTotal()}
+                    {total}
                     <CurrencyIcon type="primary" />
                 </span>
-                <Button htmlType="button" type="primary" size="large">Оформить заказ</Button>
+                <Button htmlType="button" type="primary" size="large" onClick={handleCheckoutClick}>Оформить заказ</Button>
             </div>
+            {props.modal && total > 0 && (
+                <Modal handleClose={handleModalClose}>
+                    <OrderDetails {...{ _id: '034536', total }} />
+                </Modal>
+            )}
         </React.Fragment>
     );
 
 }
 
-// BurgerConstructor.propTypes = {
-//     getData: PropTypes.func.isRequired,
-//     getTotal: PropTypes.func.isRequired,
-//     removeIngredient: PropTypes.func.isRequired,
-// };
+BurgerConstructor.propTypes = {
+    data: PropTypes.shape({
+        locked_not: PropTypes.arrayOf(DATA_CONSTRUCTOR_PROPTYPES.isRequired).isRequired,
+        locked_top: PropTypes.arrayOf(DATA_CONSTRUCTOR_PROPTYPES.isRequired).isRequired,
+        locked_bottom: PropTypes.arrayOf(DATA_CONSTRUCTOR_PROPTYPES.isRequired).isRequired,
+    }).isRequired,
+    getTotal: PropTypes.func.isRequired,
+    removeIngredient: PropTypes.func.isRequired,
+};
 
 export default BurgerConstructor;

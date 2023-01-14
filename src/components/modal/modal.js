@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import {
     CloseIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
@@ -10,7 +10,7 @@ import ModalOverlay from '../modal-overlay/modal-overlay';
 
 const modalRoot = document.getElementById('root-modal');
 
-const Modal = props => {
+const Modal = (props) => {
 
     React.useEffect(() => {
 
@@ -18,7 +18,7 @@ const Modal = props => {
 
             if (event.keyCode === 27) {
                 event.preventDefault();
-                props.close();
+                props.handleClose();
             }
     
         };
@@ -35,7 +35,7 @@ const Modal = props => {
 
         event.preventDefault();
         event.stopPropagation();
-        props.close();
+        props.handleClose();
 
     };
 
@@ -50,7 +50,7 @@ const Modal = props => {
 
         event.preventDefault();
         event.stopPropagation();
-        props.close();
+        props.handleClose();
 
     };
 
@@ -59,7 +59,7 @@ const Modal = props => {
             <ModalOverlay />
             <div className={`${modalStyles.container}`} onClick={handleContainerClick}>
                 <div className={`${modalStyles.content}`} onClick={handleContentClick}>
-                    {props.header === '' ? null : (<h2 className={`${modalStyles.header}`}>{props.header}</h2>)}
+                    {props.header ? (<h2 className={`${modalStyles.header} text text_type_main-large mt-10 mr-10 ml-10 pr-15`}>{props.header}</h2>) : null}
                     {props.children}
                     <div  className={`${modalStyles.control}`} onClick={handleControlClick}>
                         <CloseIcon type="primary" />
@@ -72,9 +72,9 @@ const Modal = props => {
 
 }
 
-//TODO: PropTypes
-// App.propTypes = {
-//     ingredients: PropTypes.arrayOf(DATA_INGREDIENT_PROPTYPES.isRequired).isRequired,
-// };
+Modal.propTypes = PropTypes.shape({
+    header: PropTypes.string,
+    handleClose: PropTypes.func.isRequired,
+}).isRequired;
 
 export default Modal;

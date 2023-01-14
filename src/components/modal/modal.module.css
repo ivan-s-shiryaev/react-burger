@@ -16,28 +16,40 @@
     justify-content: center;
     cursor: pointer;
 }
-.content {
+.container > .content {
     position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
+    align-items: center;
     width: 720px;
+    min-height: 200px;
     margin: auto;
     box-sizing: border-box;
     border-radius: 40px;
     background: #1c1c21;
     cursor: auto;
 }
-.control {
+.container > .content > .control {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
     position: absolute;
-    top: 60px;
+    top: 40px;
     right: 40px;
-    width: 24px;
-    height: 24px;
+    width: 60px;
+    height: 64px;
     overflow: hidden;
     cursor: pointer;
 }
 
-.header {
-    margin: 0;
+.container > .content > h2.header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 640px;
+    min-height: 64px;
+    box-sizing: border-box;
+    overflow: auto;
 }
