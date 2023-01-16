@@ -1,15 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './components/app/app';
-import appDataIngredients from './utils/data.js';
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
+  document.getElementById('root-app') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <App ingredients={appDataIngredients} />
+    <App />
   </React.StrictMode>
 );
 

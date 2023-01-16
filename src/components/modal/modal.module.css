@@ -1,0 +1,55 @@
+.wrapper {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+.container {
+    composes: wrapper;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    cursor: pointer;
+}
+.container > .content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 720px;
+    min-height: 200px;
+    margin: auto;
+    box-sizing: border-box;
+    border-radius: 40px;
+    background: #1c1c21;
+    cursor: auto;
+}
+.container > .content > .control {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    position: absolute;
+    top: 40px;
+    right: 40px;
+    width: 60px;
+    height: 64px;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.container > .content > h2.header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 640px;
+    min-height: 64px;
+    box-sizing: border-box;
+    overflow: auto;
+}
