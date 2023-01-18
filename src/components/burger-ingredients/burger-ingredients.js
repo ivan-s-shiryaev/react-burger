@@ -25,7 +25,7 @@ const BurgerIngredients = (props) => {
 
             event.preventDefault();
             event.stopPropagation();
-    
+
             setIngredient(item);
             props.handleModalShow();
     

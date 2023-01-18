@@ -9,7 +9,7 @@ const OrderDetails = (props) => {
     return (
         <React.Fragment>
             <div className={`${orderDetailsStyles.container} mt-30 mb-8`}>
-                <h3 className='text text_type_digits-large'>{props._id}</h3>
+                <h3 className='text text_type_digits-large'>{props.number}</h3>
             </div>
             <p className={`${orderDetailsStyles.container} mb-15 text text_type_main-medium`}>
                 идентификатор заказа
@@ -31,7 +31,8 @@ const OrderDetails = (props) => {
 }
 
 OrderDetails.propTypes = PropTypes.shape({
-    _id: PropTypes.string.isRequired,
+    number: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
     total: PropTypes.number.isRequired,
 }).isRequired;
 

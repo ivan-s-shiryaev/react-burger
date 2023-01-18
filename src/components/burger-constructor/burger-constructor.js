@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {
     Button,
     ConstructorElement,
@@ -8,22 +7,61 @@ import {
 } from "@ya.praktikum/react-developer-burger-ui-components";
 
 import {
-    DATA_CONSTRUCTOR_PROPTYPES,
+    DATA_ORDER_URL,
 } from '../../constants';
 import burgerConstructorStyles from './burger-constructor.module.css';
 import Modal from '../modal/modal';
-import OrderDetails from '../order-details/order-details'
+import OrderDetails from '../order-details/order-details';
+import {
+    OrderContext,
+} from '../../services/appContext';
 
 const BurgerConstructor = (props) => {
 
-    const total = props.getTotal();
+    const order = React.useContext(OrderContext);
+    const status = order.getStatus();
+    const data = order.data;
+    const total = order.getTotal();
 
-    const handleCheckoutClick = (event) => {
+    const handleCheckoutClick = async (event) => {
 
         event.preventDefault();
         event.stopPropagation();
 
-        props.handleModalShow();
+        try {
+
+            const body = JSON.stringify({
+                ingredients: Object.keys(data).reduce(
+                    (accumulator, value) => accumulator.concat(data[value].map((item) => item['_id']))
+                    , []
+                ),
+            });
+            const response = await fetch(DATA_ORDER_URL, {
+                method: 'POST',
+                headers: {'Content-Type':'application/json'},
+                body,
+            });
+            
+            const content = await response.json();
+
+            if (content['success']) {
+
+                order.setStatus({
+                    ...status,
+                    number: content.order.number,
+                    name: content.name,
+                });
+
+                props.handleModalShow();
+
+            } else {
+                throw new Error('message' in content ? content.message : 'Failed to proceed the Order');
+            }
+            
+
+        } catch(error) {   
+            console.error(error);
+        }
 
     };
 
@@ -31,15 +69,17 @@ const BurgerConstructor = (props) => {
 
         props.handleModalHide();
 
+        order._setData();
+
     };
 
     return (
         <React.Fragment>
             {
-                props.data['locked_top'].length > 0 ? (
+                data['head'].length > 0 ? (
                     <ul className={burgerConstructorStyles.container + " mb-4"} style={{ marginTop: 0 }}>
                         {
-                            props.data['locked_top'].map((value, index) => {
+                            data['head'].map((value, index) => {
                                 return (
                                     <li className="mb-4" key={`${value._id}_${index}`}>
                                         <ConstructorElement
@@ -57,10 +97,10 @@ const BurgerConstructor = (props) => {
                 ) : null
             }
             {
-                props.data['locked_not'].length > 0 ? (
+                data['body'].length > 0 ? (
                     <ul className={`${burgerConstructorStyles.container} ${burgerConstructorStyles.scroll}`}>
                         {
-                            props.data['locked_not'].map((value, index) => {
+                            data['body'].map((value, index) => {
                                 return (
                                     <li className="mb-4" key={`${value._id}_${index}`}>
                                         <ConstructorElement
@@ -68,7 +108,7 @@ const BurgerConstructor = (props) => {
                                             text={value.name}
                                             price={value.price}
                                             thumbnail={value.image}
-                                            handleClose= {() => props.removeIngredient(value._id)}
+                                            handleClose= {() => order.removeIngredient(value._id)}
                                             />
                                         <span><DragIcon type="primary" /></span>
                                     </li>
@@ -79,15 +119,15 @@ const BurgerConstructor = (props) => {
                 ) : null
             }
             {
-                props.data['locked_bottom'].length > 0 ? (
+                data['tail'].length > 0 ? (
                     <ul className={burgerConstructorStyles.container + " mt-4"} style={{ marginBottom: 0 }}>
                         {
-                            props.data['locked_bottom'].map((value, index) => {
+                            data['tail'].map((value, index) => {
                                 return (
                                     <li className="mb-4" key={`${value._id}_${index}`}>
                                         <ConstructorElement 
                                             isLocked={true}
-                                            type={index === props.data['locked_bottom'].length - 1 ? 'bottom' : undefined}
+                                            type={index === data['tail'].length - 1 ? 'bottom' : undefined}
                                             text={`${value.name} (низ)`}
                                             price={value.price}
                                             thumbnail={value.image}
@@ -112,24 +152,14 @@ const BurgerConstructor = (props) => {
                 </span>
                 <Button htmlType="button" type="primary" size="large" onClick={handleCheckoutClick}>Оформить заказ</Button>
             </div>
-            {props.modal && total > 0 && (
+            {props.modal && !!status.number && (
                 <Modal handleClose={handleModalClose}>
-                    <OrderDetails {...{ _id: '034536', total }} />
+                    <OrderDetails {...{ ...status, total }} />
                 </Modal>
             )}
         </React.Fragment>
     );
 
 }
-
-BurgerConstructor.propTypes = {
-    data: PropTypes.shape({
-        locked_not: PropTypes.arrayOf(DATA_CONSTRUCTOR_PROPTYPES.isRequired).isRequired,
-        locked_top: PropTypes.arrayOf(DATA_CONSTRUCTOR_PROPTYPES.isRequired).isRequired,
-        locked_bottom: PropTypes.arrayOf(DATA_CONSTRUCTOR_PROPTYPES.isRequired).isRequired,
-    }).isRequired,
-    getTotal: PropTypes.func.isRequired,
-    removeIngredient: PropTypes.func.isRequired,
-};
 
 export default BurgerConstructor;

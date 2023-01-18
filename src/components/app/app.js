@@ -3,11 +3,17 @@ import React from 'react';
 import {
     DATA_INGREDIENT_URL,
 } from '../../constants';
+import {
+    makeOrderDataFake,
+} from '../../utils/fake';
 import appStyles from './app.module.css';
 import AppHeader from '../app-header/app-header';
 import BurgerIngredients from '../burger-ingredients/burger-ingredients'
 import BurgerConstructor from '../burger-constructor/burger-constructor'
 import withModal from '../hocs/with-modal';
+import {
+    OrderContext,
+} from '../../services/appContext';
 
 const WithModalBurgerIngredients = withModal(BurgerIngredients);
 const WithModalBurgerConstructor = withModal(BurgerConstructor);
@@ -19,9 +25,15 @@ const App = () => {
             loading: true,
             ingredients: [],
             order: {
-                locked_not: ['60d3b41abdacab0026a733ce', '60d3b41abdacab0026a733c9', '60d3b41abdacab0026a733d1'],
-                locked_top: ['60d3b41abdacab0026a733c6'],
-                locked_bottom: ['60d3b41abdacab0026a733c6'],
+                status: {
+                    number: null,
+                    name: '',
+                },
+                data: {
+                    body: [],
+                    head: [],
+                    tail: [],
+                },
             },
         }
     );
@@ -34,8 +46,17 @@ const App = () => {
 
                 const response = await fetch(DATA_INGREDIENT_URL);
                 const content = await response.json();
-
-                setState({ ...state, loading: false, ingredients: content.data });
+                                                                   
+                setState({
+                    ...state,
+                    loading: false,
+                    ingredients: content.data,
+                    //TODO: remove fake Order
+                    order: {
+                        ...state.order,
+                        data: makeOrderDataFake(content.data),
+                    },
+                });
 
             } catch(error) {
                 console.error(error);
@@ -46,6 +67,18 @@ const App = () => {
         if (state.loading) fetchIngredients();
 
     }, [state]);
+
+    const _setDataConstructor = () => {
+
+        setState({
+            ...state,
+            order: {
+                ...state.order,
+                data: makeOrderDataFake(state.ingredients),
+            },
+        });
+
+    };
 
     const getDataIgredient = () => {
 
@@ -73,23 +106,73 @@ const App = () => {
 
     };
 
+    const getStatusConstructor = () => {
+
+        let result = {};
+
+        result = {
+            ...result,
+            ...state.order.status,
+        };
+
+        return result;
+    };
+
+    const setStatusConstructor = (argument) => {
+
+        setState({
+            ...state,
+            order: {
+                ...state.order,
+                status: {
+                    ...argument,
+                },
+            },
+        });
+        
+        
+    };
+
+    const getItemConstructor = (id) => {
+
+        let result = null;
+
+        const value = state.ingredients.find((item) => item._id === id);
+        if (value) {
+            result = {
+                _id: value._id,
+                type: value.type,
+                name: value.name,
+                price: value.price,
+                image: value.image,
+            }
+        } else {
+            throw new Error(`Unknown Ingredient "${id}"`)
+        }
+
+        return result;
+
+    };
+
     const getDataConstructor = () => {
 
         let result = {};
 
-
-        Object.keys(state.order).forEach(name => {
+        Object.keys(state.order.data).forEach((part) => {
             const list = [];
-            state.order[name].forEach(id => {
-                const item = state.ingredients.find(value => value._id === id);
-                if (item) list.push({
-                    _id: item._id,
-                    name: item.name,
-                    price: item.price,
-                    image: item.image,
-                });
+            state.order.data[part].forEach((value) => {
+
+                try {
+
+                    const item = getItemConstructor(value);
+                    list.push(item);
+
+                } catch(error) {
+                    console.error(error);
+                }
+
             });
-            result[name] = list;
+            result[part] = list;
         });
 
         return result;
@@ -100,10 +183,9 @@ const App = () => {
 
         let result = 0;
 
-        Object.keys(state.order).forEach(name => {
-            state.order[name].forEach(item => {
-                
-                if (item === id) ++result;
+        Object.keys(state.order.data).forEach((part) => {
+            state.order.data[part].forEach((value) => {
+                if (value === id) ++result;
             });
         });
 
@@ -115,10 +197,18 @@ const App = () => {
 
         let result = 0;
 
-        Object.keys(state.order).forEach(name => {
-            state.order[name].forEach((id) => {
-                const item = state.ingredients.find((value) => value._id === id);
-                if (item) result += item.price;
+        Object.keys(state.order.data).forEach((part) => {
+            state.order.data[part].forEach((value) => {
+
+                try {
+
+                    const item = getItemConstructor(value);
+                    result += item.price
+
+                } catch(error) {
+                    console.error(error);
+                }
+
             });
         });
 
@@ -126,21 +216,64 @@ const App = () => {
 
     };
 
-    // const addConstructorItem = (id) => {
+    /*const addConstructorItem = (id) => {
 
-    //     setOrder({
-    //         ...order,
-    //         locked_not: [
-    //             id,
-    //             ...order.locked_not,
-    //         ],
-    //     });
+        try {
 
-    // };
+            const item = getItemConstructor(id);
+
+            if (item.type === 'bun') {
+
+                let bun = false;
+
+                Object.keys(state.order.data).forEach((part) => {
+                    if (!bun) {
+                        bun = state.order.data[part].reduce(
+                            (accumulator, value) => accumulator ? accumulator : getItemConstructor(value).type === 'bun',
+                            bun
+                        );
+                    }
+                    
+                });
+
+                if (bun) {
+                    throw new Error(`Ingredient "${id}" has "bun" type and is already present in the Constructor`);
+                } else {
+                    setState({
+                        ...state,
+                        order: {
+                            ...state.order,
+                            data: {
+                                ...state.order.data,
+                                head: [item._id, ...state.order.head],
+                                tail: [...state.order.tail, item._id],
+                            },
+                        },
+                    });
+                }
+            } else {
+                setState({
+                    ...state,
+                    order: {
+                        ...state.order,
+                        data: {
+                            ...state.order,
+                            body: [item._id, ...state.order.body],
+                        },
+                    },
+                });
+            }
+
+
+        } catch(error) {
+            console.error(error);
+        }
+
+    };*/
 
     const removeConstructorItem = (id) => {
 
-        const list = [...state.order.locked_not];
+        const list = [...state.order.data.body];
         const index = list.findIndex((value) => value === id);
 
         if (index > -1) list.splice(index, 1);
@@ -149,12 +282,14 @@ const App = () => {
             ...state,
             order: {
                 ...state.order,
-                locked_not: list,
-            }
+                data: {
+                    ...state.order.data,
+                    body: list,
+                },
+            },
         });
 
     };
-
 
     return (
         <React.Fragment>
@@ -166,7 +301,17 @@ const App = () => {
                         <WithModalBurgerIngredients data={getDataIgredient()} />
                     </article>
                     <aside>
-                        <WithModalBurgerConstructor data={getDataConstructor()} removeIngredient={removeConstructorItem} getTotal={countConstructorTotal} />
+                        <OrderContext.Provider value={{
+                            data: getDataConstructor(),
+                            _setData: _setDataConstructor,
+                            getStatus: getStatusConstructor,
+                            setStatus: setStatusConstructor,
+                            getTotal: countConstructorTotal,
+                            removeIngredient: removeConstructorItem,
+
+                        }}>
+                            <WithModalBurgerConstructor />
+                        </OrderContext.Provider>
                     </aside>
                 </main>
             )}
