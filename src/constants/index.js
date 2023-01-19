@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 
-export const DATA_INGREDIENT_URL = 'https://norma.nomoreparties.space/api/ingredients';
-export const DATA_ORDER_URL = 'https://norma.nomoreparties.space/api/orders';
+export const BASE_URL = 'https://norma.nomoreparties.space/api';
 export const DATA_INGREDIENT_PROPTYPES = PropTypes.shape({
     _id: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired,

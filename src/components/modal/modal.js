@@ -16,7 +16,7 @@ const Modal = (props) => {
 
         const handleEscapePress = (event) => {
 
-            if (event.keyCode === 27) {
+            if (event.key === 'Escape') {
                 event.preventDefault();
                 props.handleClose();
             }

@@ -9,6 +9,14 @@ ul.container:first-child {
     margin-top: 100px;
 }
 
+ul.container.head {
+    margin-top: 0;
+}
+
+ul.container.tail {
+    margin-bottom: 0;
+}
+
 ul.container.scroll {
     margin: 0;
     padding: 0 6px 0 16px;
@@ -53,6 +61,14 @@ ul.container > li > div {
     max-width: none;
     padding: 16px 32px 16px 24px;
     background-color: #1c1c21;
+}
+
+div.result {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+    margin: 40px 16px 52px 0;
 }
 
 span.total {

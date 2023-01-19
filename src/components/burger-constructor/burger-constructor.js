@@ -7,8 +7,11 @@ import {
 } from "@ya.praktikum/react-developer-burger-ui-components";
 
 import {
-    DATA_ORDER_URL,
+    BASE_URL,
 } from '../../constants';
+import {
+    checkResponse,
+} from '../../utils';
 import burgerConstructorStyles from './burger-constructor.module.css';
 import Modal from '../modal/modal';
 import OrderDetails from '../order-details/order-details';
@@ -36,12 +39,14 @@ const BurgerConstructor = (props) => {
                     , []
                 ),
             });
-            const response = await fetch(DATA_ORDER_URL, {
+            const response = await fetch(`${BASE_URL}/orders`, {
                 method: 'POST',
-                headers: {'Content-Type':'application/json'},
+                headers: { 'Content-Type':'application/json' },
                 body,
             });
-            
+
+            checkResponse(response);
+
             const content = await response.json();
 
             if (content['success']) {
@@ -77,7 +82,7 @@ const BurgerConstructor = (props) => {
         <React.Fragment>
             {
                 data['head'].length > 0 ? (
-                    <ul className={burgerConstructorStyles.container + " mb-4"} style={{ marginTop: 0 }}>
+                    <ul className={`${burgerConstructorStyles.container}  ${burgerConstructorStyles.head} mt-4`}>
                         {
                             data['head'].map((value, index) => {
                                 return (
@@ -120,7 +125,7 @@ const BurgerConstructor = (props) => {
             }
             {
                 data['tail'].length > 0 ? (
-                    <ul className={burgerConstructorStyles.container + " mt-4"} style={{ marginBottom: 0 }}>
+                    <ul className={`${burgerConstructorStyles.container} ${burgerConstructorStyles.tail} mt-4`}>
                         {
                             data['tail'].map((value, index) => {
                                 return (
@@ -139,13 +144,7 @@ const BurgerConstructor = (props) => {
                     </ul>
                 ) : null
             }
-            <div style={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'flex-end',
-                alignItems: 'center',
-                margin: '40px 16px 52px 0',
-            }}>
+            <div className={`${burgerConstructorStyles.result}`}>
                 <span className={burgerConstructorStyles.total + " text text_type_digits-medium mr-10"}>
                     {total}
                     <CurrencyIcon type="primary" />

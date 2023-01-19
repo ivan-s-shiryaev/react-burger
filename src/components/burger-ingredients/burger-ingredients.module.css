@@ -8,6 +8,10 @@ div.container {
     scrollbar-color: #8585AD #2F2F37;
 }
 
+nav.menu {
+    display: flex;
+}
+
 div.container::-webkit-scrollbar {
     width: 8px;
 }
@@ -32,8 +36,6 @@ div.container > ul {
 }
 
 div.container > ul > li {
-    /* margin: 0;
-    padding: 0; */
     list-style-type: none;
 }
 
