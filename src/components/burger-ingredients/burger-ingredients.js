@@ -7,7 +7,7 @@ import {
 } from "@ya.praktikum/react-developer-burger-ui-components";
 
 import {
-    DATA_INGREDIENT_PROPTYPES,
+    INGREDIENT_PROPTYPES,
 } from '../../constants';
 import {
     getIngredientCategoryTitle,
@@ -118,7 +118,7 @@ const BurgerIngredients = (props) => {
 }
 
 BurgerIngredients.propTypes = {
-    data: PropTypes.objectOf(PropTypes.arrayOf(DATA_INGREDIENT_PROPTYPES.isRequired).isRequired).isRequired,
+    data: PropTypes.objectOf(PropTypes.arrayOf(INGREDIENT_PROPTYPES.isRequired).isRequired).isRequired,
 };
 
 export default BurgerIngredients;

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import {
-    DATA_CONSTRUCTOR_PROPTYPES,
+    INGREDIENT_PROPTYPES,
 } from '../constants';
 
 const OrderContext = React.createContext();
@@ -10,9 +10,9 @@ const OrderContext = React.createContext();
 OrderContext.Provider.propTypes = {
     value: PropTypes.shape({
         data: PropTypes.shape({
-            body: PropTypes.arrayOf(DATA_CONSTRUCTOR_PROPTYPES.isRequired).isRequired,
-            head: PropTypes.arrayOf(DATA_CONSTRUCTOR_PROPTYPES.isRequired).isRequired,
-            tail: PropTypes.arrayOf(DATA_CONSTRUCTOR_PROPTYPES.isRequired).isRequired,
+            body: PropTypes.arrayOf(INGREDIENT_PROPTYPES.isRequired).isRequired,
+            head: PropTypes.arrayOf(INGREDIENT_PROPTYPES.isRequired).isRequired,
+            tail: PropTypes.arrayOf(INGREDIENT_PROPTYPES.isRequired).isRequired,
         }).isRequired,
         _setData: PropTypes.func.isRequired,
         getStatus: PropTypes.func.isRequired,

@@ -80,6 +80,46 @@ const App = () => {
 
     }, [state]);
 
+    const countConstructorItem = React.useCallback(
+        (argument) => {
+
+            let result = 0;
+
+            Object.keys(state.order.data).forEach((part) => {
+                state.order.data[part].forEach((value) => {
+                    if (value === argument) ++result;
+                });
+            });
+
+            return result;
+
+        }
+        , [state.order.data]
+    );
+
+    const makeIngredientItem = React.useCallback(
+        (argument) => {
+
+            const result = {
+                _id: argument._id,
+                type: argument.type,
+                name: argument.name,
+                price: argument.price,
+                image: argument.image,
+                image_large: argument.image_large,
+                calories: argument.calories,
+                proteins: argument.proteins,
+                fat: argument.fat,
+                carbohydrates: argument.carbohydrates,
+                count: countConstructorItem(argument._id),
+            };
+
+            return result;
+
+        }
+        , [countConstructorItem]
+    );
+
     const _setDataConstructor = () => {
 
         setState({
@@ -92,41 +132,13 @@ const App = () => {
 
     };
 
-    const countConstructorItem = React.useCallback(
-        (id) => {
-
-            let result = 0;
-
-            Object.keys(state.order.data).forEach((part) => {
-                state.order.data[part].forEach((value) => {
-                    if (value === id) ++result;
-                });
-            });
-
-            return result;
-
-        }
-        , [state.order.data]
-    );
-
     const getDataIgredient = React.useCallback(
         () => {
 
             let result = state.ingredients.reduce(
                 (accumulator, value) => {
                     if (!Array.isArray(accumulator[value.type])) accumulator[value.type] = [];
-                    accumulator[value.type].push({
-                        _id: value._id,
-                        type: value.type,
-                        name: value.name,
-                        price: value.price,
-                        image_large: value.image_large,
-                        calories: value.calories,
-                        proteins: value.proteins,
-                        fat: value.fat,
-                        carbohydrates: value.carbohydrates,
-                        count: countConstructorItem(value._id),
-                    });
+                    accumulator[value.type].push(makeIngredientItem(value));
                     return accumulator;
                 },
                 {}
@@ -135,7 +147,7 @@ const App = () => {
             return result;
 
         }
-        , [state.ingredients, countConstructorItem]
+        , [state.ingredients, makeIngredientItem]
     );
 
     const getStatusConstructor = () => {
@@ -172,13 +184,7 @@ const App = () => {
 
             const value = state.ingredients.find((item) => item._id === id);
             if (value) {
-                result = {
-                    _id: value._id,
-                    type: value.type,
-                    name: value.name,
-                    price: value.price,
-                    image: value.image,
-                }
+                result = makeIngredientItem(value);
             } else {
                 throw new Error(`Unknown Ingredient "${id}"`)
             }
@@ -186,7 +192,7 @@ const App = () => {
             return result;
 
         }
-        , [state.ingredients]
+        , [state.ingredients, makeIngredientItem]
     );
 
     const getDataConstructor = React.useCallback(
