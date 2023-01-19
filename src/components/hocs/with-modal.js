@@ -2,7 +2,7 @@ import React from 'react';
 
 const withModal = (WrappedComponent) => (props) => {
 
-    const [modal, setModal] = React.useState(false);
+    const [modal, setModal] = React.useState(!!props.modal);
 
     const handleModalShow = () => {
 

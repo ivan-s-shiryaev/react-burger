@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {
-    DATA_INGREDIENT_PROPTYPES,
+    INGREDIENT_PROPTYPES,
 } from '../../constants';
 import ingredientDetailsStyles from './ingredient-details.module.css';
 
@@ -40,6 +40,6 @@ const IngredientDetails = (props) => {
 
 }
 
-IngredientDetails.propTypes = DATA_INGREDIENT_PROPTYPES.isRequired;
+IngredientDetails.propTypes = INGREDIENT_PROPTYPES.isRequired;
 
 export default IngredientDetails;

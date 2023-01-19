@@ -7,7 +7,7 @@ import {
 } from "@ya.praktikum/react-developer-burger-ui-components";
 
 import {
-    DATA_INGREDIENT_PROPTYPES,
+    INGREDIENT_PROPTYPES,
 } from '../../constants';
 import {
     getIngredientCategoryTitle,
@@ -18,14 +18,29 @@ import IngredientDetails from '../ingredient-details/ingredient-details';
 
 const BurgerIngredients = (props) => {
 
+    const data = props.data;
+    const typeRef = {
+        bun: React.useRef(null),
+        main: React.useRef(null),
+        sauce: React.useRef(null),
+    };
+    const [type, setType] = React.useState('bun');
     const [ingredient, setIngredient] = React.useState(null);
+
+    const handleTabClick = (argument) => {
+
+        if (argument in typeRef) {
+            setType(argument);
+        }
+
+    };
 
     const handleIngredientClick = React.useCallback(
         (item) => (event) => {
 
             event.preventDefault();
             event.stopPropagation();
-    
+
             setIngredient(item);
             props.handleModalShow();
     
@@ -44,23 +59,24 @@ const BurgerIngredients = (props) => {
 
     return (
         <React.Fragment>
-            <div style={{ display: 'flex' }}>
+            <nav className={`${burgerIngredientsStyles.menu}`}>
                 {
-                    Object.keys(props.data).map((name, id) => (
-                            <Tab value={name} active={id === 0} key={name}>{getIngredientCategoryTitle(name)}</Tab>
+                    Object.keys(data).map((value) => (
+                            
+                            <Tab value={value} active={value === type} onClick={handleTabClick} key={value}>{getIngredientCategoryTitle(value)}</Tab>
                         )
                     )
                 }
-            </div>
-            <div className={burgerIngredientsStyles.container}>
+            </nav>
+            <div className={`${burgerIngredientsStyles.container}`}>
                 {
-                    Object.keys(props.data).map(name => {
+                    Object.keys(data).map((value) => {
                             return (
-                                <React.Fragment key={name}>
-                                    <h2 className="text text_type_main-medium">{getIngredientCategoryTitle(name)}</h2>
+                                <React.Fragment key={value}>
+                                    <h2 ref={value in typeRef ? typeRef[value] : null} className="text text_type_main-medium">{getIngredientCategoryTitle(value)}</h2>
                                     <ul>
                                     {
-                                        props.data[name].map(item => {
+                                        data[value].map(item => {
                                                 return (
                                                     <li key={item._id}>
                                                         <a href="/" onClick={handleIngredientClick(item)}>
@@ -86,18 +102,23 @@ const BurgerIngredients = (props) => {
                     )
                 }
             </div>
-            {props.modal && ingredient && (
-                <Modal header="Детали ингредиента" handleClose={handleModalClose}>
-                    <IngredientDetails {...ingredient} />
-                </Modal>
-            )}
+            {
+                props.modal && ingredient && (
+                    <Modal header="Детали ингредиента" handleClose={handleModalClose}>
+                        <IngredientDetails {...ingredient} />
+                    </Modal>
+                )
+            }
+            {
+                type in typeRef && typeRef[type].current !== null ? typeRef[type].current.scrollIntoView({ behavior: "smooth" }) : null
+            }
         </React.Fragment>
     );
 
 }
 
 BurgerIngredients.propTypes = {
-    data: PropTypes.objectOf(PropTypes.arrayOf(DATA_INGREDIENT_PROPTYPES.isRequired).isRequired).isRequired,
+    data: PropTypes.objectOf(PropTypes.arrayOf(INGREDIENT_PROPTYPES.isRequired).isRequired).isRequired,
 };
 
 export default BurgerIngredients;
