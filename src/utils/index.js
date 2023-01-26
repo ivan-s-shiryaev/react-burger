@@ -12,9 +12,29 @@ export const checkResponse = (argument) => {
 
 };
 
-export const getIngredientCategoryTitle = (argument) => {
+export const makeMakeItem = (argument) => {
 
-    let result = 'Прочее';
+    const result = {
+        _id: argument._id,
+        type: argument.type,
+        name: argument.name,
+        price: argument.price,
+        image: argument.image,
+        image_large: argument.image_large,
+        calories: argument.calories,
+        proteins: argument.proteins,
+        fat: argument.fat,
+        carbohydrates: argument.carbohydrates,
+        // count: countConstructorItem(argument._id),
+    };
+
+    return result;
+
+};
+
+export const getMenuCategoryTitle = (argument) => {
+
+    let result = '';
 
     switch (argument) {
         case 'bun':
@@ -27,6 +47,7 @@ export const getIngredientCategoryTitle = (argument) => {
             result = 'Соусы';
             break;
         default:
+            result = argument;
             break;
     }
 

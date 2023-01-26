@@ -1,23 +1,40 @@
-import React from 'react';
+import {
+    useSelector,
+    useDispatch,
+} from 'react-redux';
+
+import {
+    SHOW_MODAL,
+    HIDE_MODAL,
+} from '../../services/actions';
 
 const withModal = (WrappedComponent) => (props) => {
 
-    const [modal, setModal] = React.useState(!!props.modal);
+    const modal = useSelector((state) => {
+        // console.log('M', state.modal);
+        return state.modal;
+    });
+    const dispatch = useDispatch();
 
     const handleModalShow = () => {
 
-        setModal(true);
+        dispatch({ type: SHOW_MODAL });
 
     };
 
     const handleModalHide = () => {
 
-        setModal(false);
+        dispatch({ type: HIDE_MODAL });
 
     };
 
     return (
-        <WrappedComponent {...props} modal={modal} handleModalShow={handleModalShow} handleModalHide={handleModalHide} />
+        <WrappedComponent
+            {...props}
+            modal={modal}
+            handleModalShow={handleModalShow}
+            handleModalHide={handleModalHide}
+        />
     )
 };
 

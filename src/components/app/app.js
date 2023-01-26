@@ -1,4 +1,13 @@
 import React from 'react';
+import {
+    useSelector,
+} from 'react-redux';
+import {
+    DndProvider,
+} from 'react-dnd';
+import {
+    HTML5Backend,
+} from 'react-dnd-html5-backend';
 
 import {
     BASE_URL,
@@ -23,6 +32,10 @@ const WithModalBurgerConstructor = withModal(BurgerConstructor);
 
 const App = () => {
 
+    const {
+        menu,
+    } = useSelector((state) => state);
+
     const [state, setState] = React.useState(
         {
             loading: true,
@@ -41,44 +54,44 @@ const App = () => {
         }
     );
 
-    React.useEffect(() => {
+    // React.useEffect(() => {
     
-        const fetchIngredients = async () => {
+        // const fetchIngredients = async () => {
 
-            try {
+        //     try {
 
-                const response = await fetch(`${BASE_URL}/ingredients`);
+        //         const response = await fetch(`${BASE_URL}/ingredients`);
 
-                checkResponse(response);
+        //         checkResponse(response);
 
-                const content = await response.json();
+        //         const content = await response.json();
 
-                if (content['success']) {
+        //         if (content['success']) {
 
-                    setState({
-                        ...state,
-                        loading: false,
-                        ingredients: content.data,
-                        //TODO: remove fake Order
-                        order: {
-                            ...state.order,
-                            data: makeOrderDataFake(content.data),
-                        },
-                    });
+        //             setState({
+        //                 ...state,
+        //                 loading: false,
+        //                 ingredients: content.data,
+        //                 //TODO: remove fake Order
+        //                 order: {
+        //                     ...state.order,
+        //                     data: makeOrderDataFake(content.data),
+        //                 },
+        //             });
 
-                } else {
-                    throw new Error('message' in content ? content.message : 'Failed to get the Ingredient data');
-                }
+        //         } else {
+        //             throw new Error('message' in content ? content.message : 'Failed to get the Ingredient data');
+        //         }
 
-            } catch(error) {
-                console.error(error);
-            }
+        //     } catch(error) {
+        //         console.error(error);
+        //     }
 
-        };
+        // };
 
-        if (state.loading) fetchIngredients();
+        // if (state.loading) fetchIngredients();
 
-    }, [state]);
+    // }, [state]);
 
     const countConstructorItem = React.useCallback(
         (argument) => {
@@ -327,11 +340,21 @@ const App = () => {
     return (
         <React.Fragment>
             <AppHeader />
-            {state.loading ? null : (
-                <main className={appStyles.home}>
+            <DndProvider
+                backend={HTML5Backend}
+            >
+                <main
+                    className={appStyles.home}
+                >
                     <article>
-                        <h1 className="text text_type_main-large mt-10 mb-5">Соберите бургер</h1>
-                        <WithModalBurgerIngredients data={getDataIgredient()} />
+                        <h1
+                            className="text text_type_main-large mt-10 mb-5"
+                        >
+                            Соберите бургер
+                        </h1>
+                        <WithModalBurgerIngredients
+                            modal={menu.item}
+                        />
                     </article>
                     <aside>
                         <OrderContext.Provider value={{
@@ -347,7 +370,7 @@ const App = () => {
                         </OrderContext.Provider>
                     </aside>
                 </main>
-            )}
+            </DndProvider>
         </React.Fragment>
     );
 

@@ -1,3 +1,7 @@
+nav.menu {
+    display: flex;
+}
+
 div.container {
     display: flex;
     flex-direction: column;
@@ -6,10 +10,6 @@ div.container {
     overflow-y: auto;
     scrollbar-gutter: stable;
     scrollbar-color: #8585AD #2F2F37;
-}
-
-nav.menu {
-    display: flex;
 }
 
 div.container::-webkit-scrollbar {
@@ -24,7 +24,7 @@ div.container::-webkit-scrollbar-track {
 div.container::-webkit-scrollbar-thumb {
     background: #8585AD;
 }
-
+/* 
 div.container > ul {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -73,4 +73,4 @@ div.container > ul > li > a > h3 {
     min-height: 48px;
     font-size: 16px;
     text-align: center;
-}
+} */
