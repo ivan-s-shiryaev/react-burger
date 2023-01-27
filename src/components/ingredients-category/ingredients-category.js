@@ -20,8 +20,13 @@ const IngredientsCategory = (props) => {
     } = props;
 
     const {
-        items,
-    } = useSelector((state) => state.menu);
+        menu,
+    } = useSelector((state) => state);
+
+    const items = React.useMemo(
+        () => menu.items.filter((value) => value.type === id)
+        , [id, menu.items]
+    );
 
     return (
         <React.Fragment>
@@ -35,7 +40,6 @@ const IngredientsCategory = (props) => {
             >
                 {
                     items
-                    .filter((value) => value.type === id)
                     .map((value) => {
                         return (
                             <BurgerIngredient

@@ -7,6 +7,7 @@ import {
     GET_MENU_ITEMS_SUCCESS,
     GET_MENU_ITEMS_FAILED,
     SET_MENU_ITEM,
+    SET_MENU_CATEGORY,
     SHOW_MODAL,
     HIDE_MODAL,
 } from '../actions';
@@ -35,11 +36,11 @@ const menuReducer = (
         case GET_MENU_ITEMS_SUCCESS: {
             return {
                 ...state,
-                items: action.items,
+                items: action.payload,
                 itemsRequest: false,
                 itemsFailed: false,
-                category: action.items[0].type,
-                categories: action.items.reduce(
+                category: action.payload[0].type,
+                categories: action.payload.reduce(
                     (accumulator, { type }) => accumulator.add(type)
                     , new Set()
                 ),
@@ -58,7 +59,16 @@ const menuReducer = (
             const item = state.items.find((value) => value._id === action.id);
             return {
                 ...state,
-                item: item ? {...item} : null,
+                item: item === undefined ? null : {...item},
+            };
+        }
+
+        case SET_MENU_CATEGORY: {
+            const categories = state.categories;
+            const category = [...categories].find((value) => value === action.payload);
+            return {
+                ...state,
+                category: category === undefined ? null : category,
             };
         }
 
@@ -73,7 +83,7 @@ const orderReducer = (
     state = {
         items: [],
         status: {
-            number: null,
+            _id: null,
             name: '',
         },
     }

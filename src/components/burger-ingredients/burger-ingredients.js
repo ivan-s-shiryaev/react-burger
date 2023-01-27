@@ -1,17 +1,11 @@
-import PropTypes from 'prop-types';
-import React, {
-    useEffect,
-} from 'react';
+// import PropTypes from 'prop-types';
+import React from 'react';
 import {
     useDispatch,
     useSelector,
 } from 'react-redux';
 import {
-    useDrag,
-} from "react-dnd";
-import {
-    Counter,
-    CurrencyIcon,
+    // Counter,
     Tab,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 
@@ -21,29 +15,74 @@ import {
 import {
     getMenuCategoryTitle,
 } from '../../utils';
-import burgerIngredientsStyles from './burger-ingredients.module.css';
 import {
     SET_MENU_ITEM,
+    SET_MENU_CATEGORY,
     HIDE_MODAL,
     getMenuItems,
 } from '../../services/actions';
 import Modal from '../modal/modal';
 import IngredientDetails from '../ingredient-details/ingredient-details';
 import IngredientsCategory from '../ingredients-category/ingredients-category';
+import burgerIngredientsStyles from './burger-ingredients.module.css';
 
 const BurgerIngredients = (props) => {
-
-    const dispatch = useDispatch();
-    
-    useEffect(()=> {
-        dispatch(getMenuItems());
-    }, [dispatch]);
 
     const {
         item,
         category,
         categories,
     } = useSelector((state) => state.menu);
+
+    const dispatch = useDispatch();
+
+    React.useEffect(
+        ()=> {
+            dispatch(getMenuItems());
+        }
+        , [ dispatch ]
+    );
+
+    const categoryRefs = React.useMemo(
+        ()=> [...categories].reduce(
+            (accumulator, value) => accumulator.set(value, React.createRef())
+            , new Map()
+        )
+        , [ categories ]
+    );
+
+    const containerRef = React.useRef();
+
+    const handleMenuScroll = React.useCallback(
+        () => {
+
+            const ref = categoryRefs.get(category);
+            const origin = containerRef.current.getBoundingClientRect().top;
+            const offset = ref === undefined
+                ? Infinity
+                : Math.abs(origin - ref.current.getBoundingClientRect().top)
+            ;
+            const current = [...categoryRefs].reduce(
+                (accumulator, [key, value]) => 
+                    Math.abs(origin - value.current.getBoundingClientRect().top) < offset
+                        ? key 
+                        : accumulator
+                , category
+            );
+
+            if (current !== category) dispatch({
+                type: SET_MENU_CATEGORY,
+                payload: current,
+            });
+
+        }
+        , [
+            category,
+            dispatch,
+            containerRef,
+            categoryRefs,
+        ]
+    );
 
     const handleMenuItemModalClose = React.useCallback(
         () => {
@@ -55,7 +94,8 @@ const BurgerIngredients = (props) => {
                 id: null,
             });
 
-        }, [dispatch]
+        }
+        , [ dispatch ]
     );
 
     return (
@@ -80,16 +120,22 @@ const BurgerIngredients = (props) => {
             </nav>
             {
                 <div
+                    ref={containerRef}
+                    onScroll={handleMenuScroll}
                     className={`${burgerIngredientsStyles.container}`}
                 >
                     {
                         [...categories]
                         .map((value) => {
                                 return (
-                                    <IngredientsCategory
-                                        id={value}
+                                    <div
+                                        ref={categoryRefs.has(value) ? categoryRefs.get(value) : null}
                                         key={`menu_category__${value}`}
-                                    />
+                                    >
+                                        <IngredientsCategory
+                                            id={value}
+                                        />
+                                    </div>
                                 // <React.Fragment
                                 //     key={`panel__${value_category}`}
                                 // >
@@ -155,7 +201,12 @@ const BurgerIngredients = (props) => {
                     </Modal>
                 )
             }
-            
+            {
+                categoryRefs.get(category) !== undefined
+                && categoryRefs.get(category).current !== null
+                    ? categoryRefs.get(category).current.scrollIntoView({ behavior: "smooth" })
+                    : null
+            } 
         </React.Fragment>
     );
 

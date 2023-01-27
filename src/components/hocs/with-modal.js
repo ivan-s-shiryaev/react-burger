@@ -1,3 +1,4 @@
+import React from 'react';
 import {
     useSelector,
     useDispatch,
@@ -10,23 +11,27 @@ import {
 
 const withModal = (WrappedComponent) => (props) => {
 
-    const modal = useSelector((state) => {
-        // console.log('M', state.modal);
-        return state.modal;
-    });
+    const modal = useSelector((state) => state.modal);
+
     const dispatch = useDispatch();
 
-    const handleModalShow = () => {
+    const handleModalShow = React.useCallback(
+        () => {
 
-        dispatch({ type: SHOW_MODAL });
+            dispatch({ type: SHOW_MODAL });
 
-    };
+        }
+        , [ dispatch ]
+    );
 
-    const handleModalHide = () => {
+    const handleModalHide = React.useCallback(
+        () => {
 
-        dispatch({ type: HIDE_MODAL });
+            dispatch({ type: HIDE_MODAL });
 
-    };
+        }
+        , [ dispatch ]
+    );
 
     return (
         <WrappedComponent

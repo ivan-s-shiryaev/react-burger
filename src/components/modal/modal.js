@@ -1,12 +1,6 @@
 import PropTypes from 'prop-types';
-import {
-    useEffect,
-} from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom';
-import {
-    useSelector,
-    useDispatch,
-} from 'react-redux';
 import {
     CloseIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
@@ -18,7 +12,7 @@ const modalRoot = document.getElementById('root-modal');
 
 const Modal = (props) => {
 
-    useEffect(() => {
+    React.useEffect(() => {
 
         const handleEscapePress = (event) => {
 
@@ -35,30 +29,39 @@ const Modal = (props) => {
             document.removeEventListener('keydown', handleEscapePress);
         }
 
-    }, [props]);
+    }, [ props ]);
 
-    const handleContainerClick = (event) => {
+    const handleContainerClick = React.useCallback(
+        (event) => {
 
-        event.preventDefault();
-        event.stopPropagation();
-        props.handleClose();
+            event.preventDefault();
+            event.stopPropagation();
+            props.handleClose();
 
-    };
+        }
+        , [ props ]
+    );
 
-    const handleContentClick = (event) => {
+    const handleContentClick = React.useCallback(
+        (event) => {
 
-        event.preventDefault();
-        event.stopPropagation();
+            event.preventDefault();
+            event.stopPropagation();
 
-    };
+        }
+        , []
+    );
 
-    const handleControlClick = (event) => {
+    const handleControlClick = React.useCallback(
+        (event) => {
 
-        event.preventDefault();
-        event.stopPropagation();
-        props.handleClose();
+            event.preventDefault();
+            event.stopPropagation();
+            props.handleClose();
 
-    };
+        }
+        , [ props ]
+    );
 
     return ReactDOM.createPortal(
         <div
