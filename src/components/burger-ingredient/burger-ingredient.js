@@ -1,4 +1,3 @@
-// import PropTypes from 'prop-types';
 import React from 'react';
 import {
     useDispatch,
@@ -11,9 +10,9 @@ import {
     CurrencyIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 
-// import {
-//     INGREDIENT_PROPTYPES,
-// } from '../../constants';
+import {
+    INGREDIENT_PROPTYPES,
+} from '../../constants';
 import {
     SET_MENU_ITEM,
     SHOW_MODAL,
@@ -38,10 +37,13 @@ const BurgerIngredient = (props) => {
         item: {
             id,
             type,
+            price,
         },
-        collect: (monitor) => ({
-            isDragging: monitor.isDragging()
-        }),
+        collect(monitor) {
+            return {
+                isDragging: monitor.isDragging(),
+            };
+        },
     });
 
     const handleMenuItemClick = React.useCallback(
@@ -50,11 +52,14 @@ const BurgerIngredient = (props) => {
             event.preventDefault();
             event.stopPropagation();
 
-            dispatch({ type: SHOW_MODAL });
-
             dispatch({
                 type: SET_MENU_ITEM,
                 payload: id,
+            });
+
+            dispatch({
+                type: SHOW_MODAL,
+                payload: 'menu',
             });
     
         }
@@ -66,7 +71,6 @@ const BurgerIngredient = (props) => {
         <li
             ref={dragRef}
             className={`${burgerIngredientStyles.container} ${isDragging ? burgerIngredientStyles.dragging : ''}`}
-            draggable
         >
             <a
                 href="/"
@@ -103,10 +107,8 @@ const BurgerIngredient = (props) => {
         </li>
     );
 
-}
+;}
 
-// BurgerIngredients.propTypes = {
-//     data: PropTypes.objectOf(PropTypes.arrayOf(INGREDIENT_PROPTYPES.isRequired).isRequired).isRequired,
-// };
+BurgerIngredient.propTypes = INGREDIENT_PROPTYPES;
 
 export default BurgerIngredient;

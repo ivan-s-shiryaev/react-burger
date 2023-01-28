@@ -4,16 +4,13 @@ import {
     useSelector,
 } from 'react-redux';
 
-// import {
-//     INGREDIENT_PROPTYPES,
-// } from '../../constants';
 import {
     getMenuCategoryTitle,
 } from '../../utils';
 import BurgerIngredient from '../burger-ingredient/burger-ingredient';
 import ingredientsCategoryStyles from './ingredients-category.module.css';
 
-const IngredientsCategory = (props) => {
+const IngredientsCategory = React.forwardRef((props, ref) => {
 
     const {
         id,
@@ -31,6 +28,7 @@ const IngredientsCategory = (props) => {
     return (
         <React.Fragment>
             <h2
+                ref={ref}
                 className="text text_type_main-medium"
             >
                 {getMenuCategoryTitle(id)}
@@ -54,10 +52,10 @@ const IngredientsCategory = (props) => {
         </React.Fragment>
     );
 
-}
+});
 
-// BurgerIngredients.propTypes = {
-//     data: PropTypes.objectOf(PropTypes.arrayOf(INGREDIENT_PROPTYPES.isRequired).isRequired).isRequired,
-// };
+IngredientsCategory.propTypes = {
+    id: PropTypes.string.isRequired,
+};
 
 export default IngredientsCategory;

@@ -1,17 +1,12 @@
-// import PropTypes from 'prop-types';
 import React from 'react';
 import {
     useSelector,
     useDispatch,
 } from 'react-redux';
 import {
-    // Counter,
     Tab,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 
-// import {
-//     INGREDIENT_PROPTYPES,
-// } from '../../constants';
 import {
     getMenuCategoryTitle,
 } from '../../utils';
@@ -127,20 +122,20 @@ const BurgerIngredients = (props) => {
                     {
                         [...categories]
                         .map((value) => (
-                            <div
-                                ref={categoryRefs.has(value) ? categoryRefs.get(value) : null}
+                            <React.Fragment
                                 key={`menu_category__${value}`}
                             >
                                 <IngredientsCategory
+                                    ref={categoryRefs.get(value) || null}
                                     id={value}
                                 />
-                            </div>
+                            </React.Fragment>
                         ))
                     }
                 </div>
             }
             {
-                props.modal
+                props.modal === 'menu'
                 && item
                 && (
                     <Modal
@@ -160,10 +155,6 @@ const BurgerIngredients = (props) => {
         </React.Fragment>
     );
 
-}
-
-// BurgerIngredients.propTypes = {
-//     data: PropTypes.objectOf(PropTypes.arrayOf(INGREDIENT_PROPTYPES.isRequired).isRequired).isRequired,
-// };
+};
 
 export default BurgerIngredients;

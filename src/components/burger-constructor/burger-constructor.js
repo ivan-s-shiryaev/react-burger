@@ -8,39 +8,33 @@ import {
 } from "react-dnd";
 import {
     Button,
-    ConstructorElement,
     CurrencyIcon,
-    DragIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 
 import {
-    INCREASE_MENU_ITEM,
-    DECREASE_MENU_ITEM,
-    ADD_ORDER_ITEM,
-    REMOVE_ORDER_ITEM,
+    SHOW_MODAL,
+    HIDE_MODAL,
+    addOrderItem,
+    getOrderStatus,
 } from '../../services/actions';
 import Modal from '../modal/modal';
 import OrderDetails from '../order-details/order-details';
-import {
-    OrderContext,
-} from '../../services/appContext';
+import OrderItem from '../order-item/order-item';
 import burgerConstructorStyles from './burger-constructor.module.css';
 
 const BurgerConstructor = (props) => {
-
-    const order = React.useContext(OrderContext);
-    const status = order.getStatus();
-    const total = order.getTotal();
 
     const {
         menu: {
             items,
         },
         order: {
+            total,
             items: {
                 locked,
                 unlocked,
             },
+            status,
         },
     } = useSelector((state) => state);
 
@@ -49,102 +43,37 @@ const BurgerConstructor = (props) => {
     const [, dropRef] = useDrop({
         accept: 'menu',
         drop(item) {
-
-            dispatch({
-                type: ADD_ORDER_ITEM,
-                payload: item,
-            });
-            dispatch({
-                type: INCREASE_MENU_ITEM,
-                payload: item,
-            });
-
+            dispatch(addOrderItem(item));
         },
     });
 
-    const handleOrderItemTrashClick = React.useCallback(
-        (index) => (event) => {
+    const handleOrderCheckoutClick = React.useCallback(
+        (event) => {
 
             event.preventDefault();
             event.stopPropagation();
 
-            dispatch({
-                type: REMOVE_ORDER_ITEM,
-                payload: index
-            });
-            dispatch({
-                type: DECREASE_MENU_ITEM,
-                payload: unlocked[index],
-            });
+            dispatch(getOrderStatus({ locked, unlocked }));
 
+            dispatch({
+                type: SHOW_MODAL,
+                payload: 'order',
+            });
 
         }
         , [
             dispatch,
+            locked,
             unlocked,
         ]
     );
 
-    const handleOrderCheckoutClick = React.useCallback(
+    const handleOrderCheckoutModalClose = React.useCallback(
         () => {
-
-            console.log('CHECKOUT!');
-
+            dispatch({ type: HIDE_MODAL });
         }
-        , []
+        , [ dispatch ]
     );
-
-    // const handleCheckoutClick = async (event) => {
-
-    //     event.preventDefault();
-    //     event.stopPropagation();
-
-    //     try {
-
-    //         const body = JSON.stringify({
-    //             ingredients: Object.keys(data).reduce(
-    //                 (accumulator, value) => accumulator.concat(data[value].map((item) => item['_id']))
-    //                 , []
-    //             ),
-    //         });
-    //         const response = await fetch(`${BASE_URL}/orders`, {
-    //             method: 'POST',
-    //             headers: { 'Content-Type':'application/json' },
-    //             body,
-    //         });
-
-    //         checkResponse(response);
-
-    //         const content = await response.json();
-
-    //         if (content['success']) {
-
-    //             order.setStatus({
-    //                 ...status,
-    //                 number: content.order.number,
-    //                 name: content.name,
-    //             });
-
-    //             props.handleModalShow();
-
-    //         } else {
-    //             throw new Error('message' in content ? content.message : 'Failed to proceed the Order');
-    //         }
-            
-
-    //     } catch(error) {   
-    //         console.error(error);
-    //     }
-
-    // };
-
-    const handleModalClose = () => {
-
-        props.handleModalHide();
-
-        // order._setData();
-
-    };
 
     return (
         <aside
@@ -158,20 +87,15 @@ const BurgerConstructor = (props) => {
                     >
                         {
                             locked.map((value, index) => {
-                                const item = items.find(({ _id }) => _id === value);
+                                const item = items.find(({ _id }) => _id === value.id);
                                 return item !== undefined && (
-                                    <li
-                                        className="mb-4"
-                                        key={`order_item__locked_top__${index}_${item._id}`}
-                                    >
-                                        <ConstructorElement
-                                            isLocked={true}
-                                            type={index === 0 ? 'top' : null}
-                                            text={`${item.name} (верх)`}
-                                            price={item.price}
-                                            thumbnail={item.image}
-                                        />
-                                    </li>
+                                    <OrderItem
+                                        {...item}
+                                        locked={true}
+                                        index={index}
+                                        mode={'top'}
+                                        key={`order_item__locked_top__${item._id}_${value.time}`}
+                                    />
                                 )
                             })
                         }
@@ -185,21 +109,15 @@ const BurgerConstructor = (props) => {
                     >
                         {
                             unlocked.map((value, index) => {
-                                const item = items.find(({ _id }) => _id === value);
+                                const item = items.find(({ _id }) => _id === value.id);
                                 return item !== undefined && (
-                                    <li
-                                        className="mb-4"
-                                        key={`order_item__unlocked_middle__${index}_${item._id}`}
-                                    >
-                                        <ConstructorElement
-                                            isLocked={false}
-                                            text={item.name}
-                                            price={item.price}
-                                            thumbnail={item.image}
-                                            handleClose= {handleOrderItemTrashClick(index)}
-                                            />
-                                        <span><DragIcon type="primary" /></span>
-                                    </li>
+                                    <OrderItem
+                                        {...item}
+                                        locked={false}
+                                        index={index}
+                                        mode={'stream'}
+                                        key={`order_item__unlocked_middle__${item._id}_${value.time}`}
+                                    />
                                 )
                             })
                         }
@@ -213,30 +131,33 @@ const BurgerConstructor = (props) => {
                     >
                         {
                             locked.map((value, index) => {
-                                const item = items.find(({ _id }) => _id === value);
+                                const item = items.find(({ _id }) => _id === value.id);
                                 return item !== undefined && (
-                                    <li
-                                        className="mb-4"
-                                        key={`order_item__locked_bottom__${index}_${item._id}`}
-                                    >
-                                        <ConstructorElement 
-                                            isLocked={true}
-                                            type={index === locked.length - 1 ? 'bottom' : null}
-                                            text={`${item.name} (низ)`}
-                                            price={item.price}
-                                            thumbnail={item.image}
-                                        />
-                                    </li>
+                                    <OrderItem
+                                        {...item}
+                                        locked={true}
+                                        index={index}
+                                        mode={'bottom'}
+                                        key={`order_item__locked_bottom__${item._id}_${value.time}`}
+                                    />
                                 )
                             })
                         }
                     </ul>
                 ) : null
             }
-            <div className={`${burgerConstructorStyles.result}`}>
-                <span className={burgerConstructorStyles.total + " text text_type_digits-medium mr-10"}>
-                    {total}
-                    <CurrencyIcon type="primary" />
+            <div
+                className={`${burgerConstructorStyles.result}`}
+            >
+                <span
+                    className={`${burgerConstructorStyles.total} text text_type_digits-medium mr-10`}
+                >
+                    {
+                        total.locked + total.unlocked
+                    }
+                    <CurrencyIcon
+                        type="primary"
+                    />
                 </span>
                 <Button
                     htmlType="button"
@@ -247,14 +168,23 @@ const BurgerConstructor = (props) => {
                     Оформить заказ
                 </Button>
             </div>
-            {props.modal && !!status.number && (
-                <Modal handleClose={handleModalClose}>
-                    <OrderDetails {...{ ...status, total }} />
-                </Modal>
-            )}
+            {
+                props.modal === 'order'
+                && status.number !== null
+                && (
+                    <Modal
+                        handleClose={handleOrderCheckoutModalClose}
+                    >
+                        <OrderDetails
+                            number={status.number}
+                            name={status.name}
+                        />
+                    </Modal>
+                )
+            }
         </aside>
     );
 
-}
+};
 
 export default BurgerConstructor;

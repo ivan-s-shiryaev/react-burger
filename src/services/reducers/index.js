@@ -5,28 +5,49 @@ import {
 import {
     GET_MENU_ITEMS_REQUEST,
     GET_MENU_ITEMS_SUCCESS,
-    GET_MENU_ITEMS_FAILED,
+    GET_MENU_ITEMS_ERROR,
+    RESET_MENU_ITEMS_COUNT,
     SET_MENU_ITEM,
     SET_MENU_CATEGORY,
-    INCREASE_MENU_ITEM,
-    DECREASE_MENU_ITEM,
+    INCREASE_MENU_ITEM_COUNT,
+    DECREASE_MENU_ITEM_COUNT,
+    GET_ORDER_STATUS_REQUEST,
+    GET_ORDER_STATUS_SUCCESS,
+    GET_ORDER_STATUS_ERROR,
+    RESET_ORDER_STATUS,
+    REORDER_ORDER_ITEMS,
     ADD_ORDER_ITEM,
     REMOVE_ORDER_ITEM,
     SHOW_MODAL,
     HIDE_MODAL,
 } from '../actions';
 
-const menuReducer = (
-    state = {
-        item: null,
-        items: [],
-        itemsRequest: false,
-        itemsFailed: false,
-        category: null,
-        categories: new Set(),
-    }
-    , action
-) => {
+const initialStateMenu = {
+    item: null,
+    items: [],
+    itemsRequest: false,
+    itemsError: false,
+    category: null,
+    categories: new Set(),
+};
+const initialStateOrder = {
+    total: {
+        locked: 0,
+        unlocked: 0,
+    },
+    items: {
+        locked: [],
+        unlocked: [],
+    },
+    status: {
+        number: null,
+        name: null,
+    },
+    statusRequest: false,
+    statusError: false,
+}
+
+const menuReducer = (state = initialStateMenu, action) => {
 
     switch(action.type) {
 
@@ -38,12 +59,11 @@ const menuReducer = (
         }
 
         case GET_MENU_ITEMS_SUCCESS: {
-            const items = action.payload.map((value) => ({ ...value, count: 0 }));
             return {
                 ...state,
-                items,
+                items: action.payload,
                 itemsRequest: false,
-                itemsFailed: false,
+                itemsError: false,
                 category: action.payload[0].type,
                 categories: action.payload.reduce(
                     (accumulator, { type }) => accumulator.add(type)
@@ -52,11 +72,17 @@ const menuReducer = (
             };
         }
 
-        case GET_MENU_ITEMS_FAILED: {
+        case GET_MENU_ITEMS_ERROR: {
+            return {
+                ...initialStateMenu,
+                itemsError: true,
+            };
+        }
+
+        case RESET_MENU_ITEMS_COUNT: {
             return {
                 ...state,
-                itemsRequest: false,
-                itemsFailed: true,
+                items: state.items.map((value) => ({ ...value, count: 0 }))
             };
         }
 
@@ -80,7 +106,7 @@ const menuReducer = (
 
         }
     
-        case INCREASE_MENU_ITEM: {
+        case INCREASE_MENU_ITEM_COUNT: {
 
             const item = state.items.find((value) => value._id === action.payload.id);
             const items = item === undefined
@@ -115,9 +141,9 @@ const menuReducer = (
 
         }
 
-        case DECREASE_MENU_ITEM: {
+        case DECREASE_MENU_ITEM_COUNT: {
 
-            const item = state.items.find((value) => value._id === action.payload);
+            const item = state.items.find((value) => value._id === action.payload.id);
             const items = item === undefined
                 ? state.items
                 : state.items.reduce(
@@ -154,50 +180,100 @@ const menuReducer = (
 
 };
 
-const orderReducer = (
-    state = {
-        items: {
-            locked: [],
-            unlocked: [],
-        },
-        status: {
-            _id: null,
-            name: '',
-        },
-    }
-    , action
-) => {
+const orderReducer = (state = initialStateOrder, action) => {
 
     switch(action.type) {
 
+        case GET_ORDER_STATUS_REQUEST: {
+            return {
+                ...state,
+                statusRequest: true,
+            };
+        }
+
+        case GET_ORDER_STATUS_SUCCESS: {
+            return {
+                ...state,
+                status: { ...action.payload },
+                statusRequest: false,
+                statusError: false,
+            };
+        }
+
+        case GET_ORDER_STATUS_ERROR: {
+            return {
+                ...state,
+                statusError: true,
+            };
+        }
+    
+        case RESET_ORDER_STATUS: {
+            return {
+                ...state,
+                status: { ...initialStateOrder.status },
+            };
+        }
+
+        case REORDER_ORDER_ITEMS: {
+
+            const items = [ ...state.items.unlocked ];
+            const item = items.splice(action.payload.from, 1)[0];
+
+            items.splice(action.payload.to, 0, item);
+
+            return {
+                ...state,
+                items: {
+                    ...state.items,
+                    unlocked: items,
+                },
+            };
+
+        }
+
         case ADD_ORDER_ITEM: {
+
+            const time = new Date().getTime();
+
             return action.payload.type === 'bun'
                 ? {
                     ...state,
+                    total: {
+                        ...state.total,
+                        locked: action.payload.price * 2,
+                    },
                     items: {
                         ...state.items,
-                        locked: [ action.payload.id ],
+                        locked: [ { id: action.payload.id, time } ],
                     },
                 }
                 : {
                     ...state,
+                    total: {
+                        ...state.total,
+                        unlocked: state.total.unlocked + action.payload.price,
+                    },
                     items: {
                         ...state.items,
-                        unlocked: [ action.payload.id, ...state.items.unlocked ],
+                        unlocked: [ { id: action.payload.id, time }, ...state.items.unlocked ],
                     },
                 }
             ;
         }
 
         case REMOVE_ORDER_ITEM: {
-            return state.items.unlocked[action.payload] !== undefined
+            return state.items.unlocked[action.payload.index] !== undefined
                 ? {
                     ...state,
+                    total: {
+                        ...state.total,
+                        unlocked: state.total.unlocked - action.payload.price,
+                    },
                     items: {
                         ...state.items,
                         unlocked: [
-                            ...state.items.unlocked.slice(0, action.payload),
-                            ...state.items.unlocked.slice(action.payload + 1)
+                            ...state.items.unlocked.slice(0, action.payload.index),
+                            ...state.items.unlocked.slice(action.payload.index + 1)
                         ],
                     }
                 }
@@ -212,14 +288,14 @@ const orderReducer = (
 };
 
 const modalReducer = (
-    state = false
+    state = ''
     , action
 ) => {
 
     switch(action.type) {
 
         case SHOW_MODAL: {
-            return true;
+            return action.payload;
         }
 
         case HIDE_MODAL: {

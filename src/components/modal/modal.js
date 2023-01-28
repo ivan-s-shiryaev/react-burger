@@ -106,9 +106,9 @@ const Modal = (props) => {
 
 };
 
-Modal.propTypes = PropTypes.shape({
+Modal.propTypes = {
     header: PropTypes.string,
     handleClose: PropTypes.func.isRequired,
-}).isRequired;
+};
 
 export default Modal;

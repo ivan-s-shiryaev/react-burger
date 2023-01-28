@@ -7,7 +7,9 @@ import ingredientDetailsStyles from './ingredient-details.module.css';
 
 const IngredientDetails = () => {
 
-    const { item } = useSelector((store) => store.menu);
+    const {
+        item,
+    } = useSelector((store) => store.menu);
 
     return item
         ? (

@@ -1,0 +1,25 @@
+li.container {
+    position: relative;
+    padding: 0 0 0 32px;
+}
+
+li.container.dragging {
+    opacity: .0;
+}
+
+li.container > span {
+    position: absolute;
+    display: flex;
+    top: 0;
+    left: 0;
+    width: 32px;
+    height: 100%;
+    align-items: center;
+    cursor: row-resize;
+}
+
+li.container > div {
+    max-width: none;
+    padding: 16px 32px 16px 24px;
+    background-color: #1c1c21;
+}

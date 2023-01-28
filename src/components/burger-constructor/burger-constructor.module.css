@@ -43,30 +43,8 @@ ul.container.scroll::-webkit-scrollbar-thumb {
     background: #8585AD;
 }
 
-ul.container > li {
-    position: relative;
-    padding: 0 0 0 32px;
-}
-
 ul.container > li:last-child {
     margin-bottom: 0;
-}
-
-ul.container > li > span {
-    position: absolute;
-    display: flex;
-    top: 0;
-    left: 0;
-    width: 32px;
-    height: 100%;
-    align-items: center;
-    cursor: row-resize;
-}
-
-ul.container > li > div {
-    max-width: none;
-    padding: 16px 32px 16px 24px;
-    background-color: #1c1c21;
 }
 
 div.result {
