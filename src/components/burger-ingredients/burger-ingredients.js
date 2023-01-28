@@ -1,8 +1,8 @@
 // import PropTypes from 'prop-types';
 import React from 'react';
 import {
-    useDispatch,
     useSelector,
+    useDispatch,
 } from 'react-redux';
 import {
     // Counter,
@@ -91,7 +91,7 @@ const BurgerIngredients = (props) => {
 
             dispatch({
                 type: SET_MENU_ITEM,
-                id: null,
+                payload: null,
             });
 
         }
@@ -126,66 +126,16 @@ const BurgerIngredients = (props) => {
                 >
                     {
                         [...categories]
-                        .map((value) => {
-                                return (
-                                    <div
-                                        ref={categoryRefs.has(value) ? categoryRefs.get(value) : null}
-                                        key={`menu_category__${value}`}
-                                    >
-                                        <IngredientsCategory
-                                            id={value}
-                                        />
-                                    </div>
-                                // <React.Fragment
-                                //     key={`panel__${value_category}`}
-                                // >
-                                //     <h2
-                                //         className="text text_type_main-medium"
-                                //     >
-                                //         {getMenuCategoryTitle(value_category)}
-                                //     </h2>
-                                //     <ul>
-                                //         {
-                                //             items
-                                //             .filter((value_item) => value_item.type === value_category)
-                                //             .map((value_item) => {
-                                //                 return (
-                                //                     <li
-                                //                         key={`menu_item__${value_item._id}`}
-                                //                     >
-                                //                         <a
-                                //                             href="/"
-                                //                             onClick={handleMenuItemClick(value_item._id)}
-                                //                         >
-                                //                             <div>
-                                //                                 <img
-                                //                                     src={value_item.image_large}
-                                //                                     alt={value_item.name}
-                                //                                 />
-                                //                                 <span
-                                //                                     className="text text_type_digits-default"
-                                //                                 >
-                                //                                     {value_item.price}
-                                //                                     <CurrencyIcon
-                                //                                         type="primary"
-                                //                                     />
-                                //                                 </span>
-                                //                             </div>
-                                //                             <h3
-                                //                                 className="text text_type_main-small"
-                                //                             >
-                                //                                 {value_item.name}
-                                //                             </h3>
-                                //                         </a>
-                                //                     </li>
-                                //                 );
-                                //             })
-                                                
-                                //         }
-                                //     </ul>
-                                // </React.Fragment>
-                            );
-                        })
+                        .map((value) => (
+                            <div
+                                ref={categoryRefs.has(value) ? categoryRefs.get(value) : null}
+                                key={`menu_category__${value}`}
+                            >
+                                <IngredientsCategory
+                                    id={value}
+                                />
+                            </div>
+                        ))
                     }
                 </div>
             }

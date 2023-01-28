@@ -1,7 +1,6 @@
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import React from 'react';
 import {
-    useSelector,
     useDispatch,
 } from 'react-redux';
 import {
@@ -25,16 +24,21 @@ const BurgerIngredient = (props) => {
 
     const {
         _id: id,
+        type,
         name,
         price,
+        count,
         image_large,
     } = props;
 
     const dispatch = useDispatch();
 
     const [{ isDragging }, dragRef] = useDrag({
-        type: 'ingredient',
-        item: { id },
+        type: 'menu',
+        item: {
+            id,
+            type,
+        },
         collect: (monitor) => ({
             isDragging: monitor.isDragging()
         }),
@@ -50,11 +54,11 @@ const BurgerIngredient = (props) => {
 
             dispatch({
                 type: SET_MENU_ITEM,
-                id,
+                payload: id,
             });
     
         }
-        , [dispatch]
+        , [ dispatch ]
     );
 
     return (
@@ -68,6 +72,14 @@ const BurgerIngredient = (props) => {
                 href="/"
                 onClick={handleMenuItemClick(id)}
             >
+                {
+                    count > 0 && (
+                        <Counter
+                            count={count}
+                            size="default"
+                        />
+                    )
+                }
                 <div>
                     <img
                         src={image_large}

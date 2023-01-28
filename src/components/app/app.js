@@ -10,15 +10,8 @@ import {
 } from 'react-dnd-html5-backend';
 
 import {
-    BASE_URL,
-} from '../../constants';
-import {
-    checkResponse,
-} from '../../utils';
-import {
     makeOrderDataFake,
 } from '../../utils/fake';
-import appStyles from './app.module.css';
 import AppHeader from '../app-header/app-header';
 import BurgerIngredients from '../burger-ingredients/burger-ingredients'
 import BurgerConstructor from '../burger-constructor/burger-constructor'
@@ -26,6 +19,7 @@ import withModal from '../hocs/with-modal';
 import {
     OrderContext,
 } from '../../services/appContext';
+import appStyles from './app.module.css';
 
 const WithModalBurgerIngredients = withModal(BurgerIngredients);
 const WithModalBurgerConstructor = withModal(BurgerConstructor);
@@ -145,23 +139,23 @@ const App = () => {
 
     };
 
-    const getDataIgredient = React.useCallback(
-        () => {
+    // const getDataIgredient = React.useCallback(
+    //     () => {
 
-            let result = state.ingredients.reduce(
-                (accumulator, value) => {
-                    if (!Array.isArray(accumulator[value.type])) accumulator[value.type] = [];
-                    accumulator[value.type].push(makeIngredientItem(value));
-                    return accumulator;
-                },
-                {}
-            );
+    //         let result = state.ingredients.reduce(
+    //             (accumulator, value) => {
+    //                 if (!Array.isArray(accumulator[value.type])) accumulator[value.type] = [];
+    //                 accumulator[value.type].push(makeIngredientItem(value));
+    //                 return accumulator;
+    //             },
+    //             {}
+    //         );
 
-            return result;
+    //         return result;
 
-        }
-        , [state.ingredients, makeIngredientItem]
-    );
+    //     }
+    //     , [state.ingredients, makeIngredientItem]
+    // );
 
     const getStatusConstructor = () => {
 
@@ -356,19 +350,17 @@ const App = () => {
                             modal={menu.item}
                         />
                     </article>
-                    <aside>
-                        <OrderContext.Provider value={{
-                            data: getDataConstructor(),
-                            _setData: _setDataConstructor,
-                            getStatus: getStatusConstructor,
-                            setStatus: setStatusConstructor,
-                            getTotal: countConstructorTotal,
-                            removeIngredient: removeConstructorItem,
+                    <OrderContext.Provider value={{
+                        data: getDataConstructor(),
+                        _setData: _setDataConstructor,
+                        getStatus: getStatusConstructor,
+                        setStatus: setStatusConstructor,
+                        getTotal: countConstructorTotal,
+                        removeIngredient: removeConstructorItem,
 
-                        }}>
-                            <WithModalBurgerConstructor />
-                        </OrderContext.Provider>
-                    </aside>
+                    }}>
+                        <WithModalBurgerConstructor />
+                    </OrderContext.Provider>
                 </main>
             </DndProvider>
         </React.Fragment>
