@@ -37,6 +37,7 @@ const BurgerConstructor = (props) => {
             status,
         },
     } = useSelector((state) => state);
+    const summary = total.locked + total.unlocked;
 
     const dispatch = useDispatch();
 
@@ -153,7 +154,7 @@ const BurgerConstructor = (props) => {
                     className={`${burgerConstructorStyles.total} text text_type_digits-medium mr-10`}
                 >
                     {
-                        total.locked + total.unlocked
+                        summary
                     }
                     <CurrencyIcon
                         type="primary"
@@ -163,7 +164,7 @@ const BurgerConstructor = (props) => {
                     htmlType="button"
                     type="primary"
                     size="large"
-                    onClick={handleOrderCheckoutClick}
+                    onClick={total.locked + total.unlocked > 0 ? handleOrderCheckoutClick : undefined}
                 >
                     Оформить заказ
                 </Button>

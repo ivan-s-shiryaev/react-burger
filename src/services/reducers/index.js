@@ -198,6 +198,8 @@ const orderReducer = (state = initialStateOrder, action) => {
             return {
                 ...state,
                 status: { ...action.payload },
+                total: { ...initialStateOrder.total },
+                items: { ...initialStateOrder.items },
                 statusRequest: false,
                 statusError: false,
             };

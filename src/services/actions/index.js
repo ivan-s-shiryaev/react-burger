@@ -145,6 +145,8 @@ export function getOrderStatus(items) {
                 },
             });
 
+            dispatch({ type: RESET_MENU_ITEMS_COUNT });
+
         })
         .catch((error) => {
 
