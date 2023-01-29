@@ -94,7 +94,7 @@ const BurgerConstructor = (props) => {
                                         locked={true}
                                         index={index}
                                         mode={'top'}
-                                        key={`order_item__locked_top__${item._id}_${value.time}`}
+                                        key={`order_item__locked_top__${value.uuid}`}
                                     />
                                 )
                             })
@@ -116,7 +116,7 @@ const BurgerConstructor = (props) => {
                                         locked={false}
                                         index={index}
                                         mode={'stream'}
-                                        key={`order_item__unlocked_middle__${item._id}_${value.time}`}
+                                        key={`order_item__unlocked_middle__${value.uuid}`}
                                     />
                                 )
                             })
@@ -138,7 +138,7 @@ const BurgerConstructor = (props) => {
                                         locked={true}
                                         index={index}
                                         mode={'bottom'}
-                                        key={`order_item__locked_bottom__${item._id}_${value.time}`}
+                                        key={`order_item__locked_bottom__${value.uuid}`}
                                     />
                                 )
                             })
