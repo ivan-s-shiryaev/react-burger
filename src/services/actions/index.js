@@ -108,7 +108,7 @@ export function removeOrderItem(item) {
 export function getOrderStatus(items) {
     return function(dispatch) {
 
-        const getOrderItem_Id = (value)  => value.id;
+        const getOrderItemId = (value)  => value.id;
 
         dispatch({ type: RESET_ORDER_STATUS });
 
@@ -121,9 +121,9 @@ export function getOrderStatus(items) {
                 headers: { 'Content-Type':'application/json' },
                 body: JSON.stringify({
                     ingredients: [
-                        ...items.locked.map(getOrderItem_Id),
-                        ...items.unlocked.map(getOrderItem_Id),
-                        ...items.locked.map(getOrderItem_Id),
+                        ...items.locked.map(getOrderItemId),
+                        ...items.unlocked.map(getOrderItemId),
+                        ...items.locked.map(getOrderItemId),
                     ],
                 }),
             }
