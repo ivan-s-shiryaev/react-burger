@@ -6,6 +6,9 @@ import {
     useDrag
 } from "react-dnd";
 import {
+    v4 as uuidv4,
+} from 'uuid';
+import {
     Counter,
     CurrencyIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
@@ -38,6 +41,7 @@ const BurgerIngredient = (props) => {
             id,
             type,
             price,
+            uuid: uuidv4(),
         },
         collect(monitor) {
             return {

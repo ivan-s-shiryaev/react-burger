@@ -1,9 +1,6 @@
 import {
     combineReducers,
 } from 'redux';
-import {
-    v4 as uuidv4,
-} from 'uuid';
 
 import {
     GET_MENU_ITEMS_REQUEST,
@@ -238,8 +235,6 @@ const orderReducer = (state = initialStateOrder, action) => {
 
         case ADD_ORDER_ITEM: {
 
-            const uuid = uuidv4();
-
             return action.payload.type === 'bun'
                 ? {
                     ...state,
@@ -249,7 +244,7 @@ const orderReducer = (state = initialStateOrder, action) => {
                     },
                     items: {
                         ...state.items,
-                        locked: [ { id: action.payload.id, uuid } ],
+                        locked: [ { id: action.payload.id, uuid: action.payload.uuid } ],
                     },
                 }
                 : {
@@ -260,7 +255,7 @@ const orderReducer = (state = initialStateOrder, action) => {
                     },
                     items: {
                         ...state.items,
-                        unlocked: [ { id: action.payload.id, uuid }, ...state.items.unlocked ],
+                        unlocked: [ { id: action.payload.id, uuid: action.payload.uuid }, ...state.items.unlocked ],
                     },
                 }
             ;
