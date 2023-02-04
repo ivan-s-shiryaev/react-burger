@@ -1,12 +1,12 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import PropTypes from 'prop-types';
 import {
     CloseIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 
-import modalStyles from './modal.module.css';
 import ModalOverlay from '../modal-overlay/modal-overlay';
+import modalStyles from './modal.module.css';
 
 const modalRoot = document.getElementById('root-modal');
 
@@ -29,52 +29,86 @@ const Modal = (props) => {
             document.removeEventListener('keydown', handleEscapePress);
         }
 
-    }, [props]);
+    }, [ props ]);
 
-    const handleContainerClick = event => {
+    const handleContainerClick = React.useCallback(
+        (event) => {
 
-        event.preventDefault();
-        event.stopPropagation();
-        props.handleClose();
+            event.preventDefault();
+            event.stopPropagation();
+            props.handleClose();
 
-    };
+        }
+        , [ props ]
+    );
 
-    const handleContentClick = event => {
+    const handleContentClick = React.useCallback(
+        (event) => {
 
-        event.preventDefault();
-        event.stopPropagation();
+            event.preventDefault();
+            event.stopPropagation();
 
-    };
+        }
+        , []
+    );
 
-    const handleControlClick = event => {
+    const handleControlClick = React.useCallback(
+        (event) => {
 
-        event.preventDefault();
-        event.stopPropagation();
-        props.handleClose();
+            event.preventDefault();
+            event.stopPropagation();
+            props.handleClose();
 
-    };
+        }
+        , [ props ]
+    );
 
     return ReactDOM.createPortal(
-        <div className={`${modalStyles.wrapper}`}>
+        <div
+            className={`${modalStyles.wrapper}`
+        }>
             <ModalOverlay />
-            <div className={`${modalStyles.container}`} onClick={handleContainerClick}>
-                <div className={`${modalStyles.content}`} onClick={handleContentClick}>
-                    {props.header ? (<h2 className={`${modalStyles.header} text text_type_main-large mt-10 mr-10 ml-10 pr-15`}>{props.header}</h2>) : null}
-                    {props.children}
-                    <div  className={`${modalStyles.control}`} onClick={handleControlClick}>
-                        <CloseIcon type="primary" />
+            <div
+                className={`${modalStyles.container}`}
+                onClick={handleContainerClick}
+            >
+                <div
+                    className={`${modalStyles.content}`}
+                    onClick={handleContentClick}
+                >
+                    {
+                        props.header
+                            ? (
+                                <h2
+                                    className={`${modalStyles.header} text text_type_main-large mt-10 mr-10 ml-10 pr-15`}
+                                >
+                                    {props.header}
+                                </h2>
+                            )
+                            : null
+                    }
+                    {
+                        props.children
+                    }
+                    <div
+                        className={`${modalStyles.control}`}
+                        onClick={handleControlClick}
+                    >
+                        <CloseIcon
+                            type="primary"
+                        />
                     </div>
                 </div>
             </div>
-        </div>,
-        modalRoot
+        </div>
+        , modalRoot
     );
 
-}
+};
 
-Modal.propTypes = PropTypes.shape({
+Modal.propTypes = {
     header: PropTypes.string,
     handleClose: PropTypes.func.isRequired,
-}).isRequired;
+};
 
 export default Modal;

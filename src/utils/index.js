@@ -12,9 +12,9 @@ export const checkResponse = (argument) => {
 
 };
 
-export const getIngredientCategoryTitle = (argument) => {
+export const getMenuCategoryTitle = (argument) => {
 
-    let result = 'Прочее';
+    let result = '';
 
     switch (argument) {
         case 'bun':
@@ -27,6 +27,7 @@ export const getIngredientCategoryTitle = (argument) => {
             result = 'Соусы';
             break;
         default:
+            result = argument;
             break;
     }
 
