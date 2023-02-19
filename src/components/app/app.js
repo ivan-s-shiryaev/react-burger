@@ -1,17 +1,4 @@
-// import React from 'react';
-// import {
-//     DndProvider,
-// } from 'react-dnd';
-// import {
-//     HTML5Backend,
-// } from 'react-dnd-html5-backend';
-
-// import AppHeader from '../app-header/app-header';
-// import BurgerIngredients from '../burger-ingredients/burger-ingredients'
-// import BurgerConstructor from '../burger-constructor/burger-constructor'
-// import withModal from '../hocs/with-modal';
-// import appStyles from './app.module.css';
-
+import React from 'react';
 import {
     BrowserRouter,
     Routes,
@@ -28,9 +15,9 @@ import {
     IngredientPage,
     NotFound404,
 } from '../../pages';
-
-// const WithModalBurgerIngredients = withModal(BurgerIngredients);
-// const WithModalBurgerConstructor = withModal(BurgerConstructor);
+import {
+    ProtectedRoute,
+} from '../protected-route';
 
 const App = () => {
 
@@ -59,7 +46,11 @@ const App = () => {
                 />
                 <Route
                     path="/profile"
-                    element={<ProfilePage />}
+                    element={
+                        <ProtectedRoute
+                            element={<ProfilePage />}
+                        />
+                    }
                 />
                 <Route
                     path="/ingredients/:id"
@@ -72,29 +63,6 @@ const App = () => {
             </Routes>
         </BrowserRouter>
     );
-
-    // return (
-    //     <React.Fragment>
-    //         <AppHeader />
-    //         <DndProvider
-    //             backend={HTML5Backend}
-    //         >
-    //             <main
-    //                 className={appStyles.home}
-    //             >
-    //                 <article>
-    //                     <h1
-    //                         className="text text_type_main-large mt-10 mb-5"
-    //                     >
-    //                         Соберите бургер
-    //                     </h1>
-    //                     <WithModalBurgerIngredients />
-    //                 </article>
-    //                 <WithModalBurgerConstructor />
-    //             </main>
-    //         </DndProvider>
-    //     </React.Fragment>
-    // );
 
 };
 

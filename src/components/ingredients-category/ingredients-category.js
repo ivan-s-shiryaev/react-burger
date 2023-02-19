@@ -22,7 +22,10 @@ const IngredientsCategory = React.forwardRef((props, ref) => {
 
     const items = React.useMemo(
         () => menu.items.filter((value) => value.type === id)
-        , [id, menu.items]
+        , [
+            id,
+            menu.items,
+        ]
     );
 
     return (
