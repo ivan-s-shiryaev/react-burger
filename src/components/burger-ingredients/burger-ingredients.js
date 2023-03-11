@@ -14,7 +14,6 @@ import {
     SET_MENU_ITEM,
     SET_MENU_CATEGORY,
     HIDE_MODAL,
-    getMenuItems,
 } from '../../services/actions/order';
 import Modal from '../modal/modal';
 import IngredientDetails from '../ingredient-details/ingredient-details';
@@ -27,26 +26,25 @@ const BurgerIngredients = (props) => {
 
     const {
         item,
-        items,
         category,
         categories,
     } = useSelector((state) => state.menu);
 
-    React.useEffect(
-        ()=> {
-            if (items.length === 0) {
-                (
-                    async () => {
-                        await dispatch(getMenuItems());
-                    }
-                )();
-            }
-        }
-        , [
-            dispatch,
-            items.length,
-        ]
-    );
+    // React.useEffect(
+    //     ()=> {
+    //         if (items.length === 0) {
+    //             (
+    //                 async () => {
+    //                     await dispatch(getMenuItems());
+    //                 }
+    //             )();
+    //         }
+    //     }
+    //     , [
+    //         dispatch,
+    //         items.length,
+    //     ]
+    // );
 
     const categoryRefs = React.useMemo(
         ()=> [...categories].reduce(

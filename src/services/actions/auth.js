@@ -2,12 +2,10 @@ import {
     BASE_URL,
 } from '../../constants';
 import {
+    checkResponse,
     getCookie,
     setCookie,
     deleteCookie,
-} from '../../utils';
-import {
-    checkResponse,
 } from '../../utils';
 
 export const READ_AUTH_USER_REQUEST = 'READ_AUTH_USER_REQUEST';
@@ -344,7 +342,7 @@ export function readAuthLogin(argument) {
 
             if (content.success) {
 
-                setCookie('access', content.accessToken.split('Bearer ')[1]);
+                setCookie('access', content.accessToken.split('Bearer ')[1], { expires: 1200 });
                 setCookie('refresh', content.refreshToken);
 
                 dispatch({

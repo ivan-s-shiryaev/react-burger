@@ -1,10 +1,18 @@
 import React from 'react';
 import {
-    BrowserRouter,
+    useDispatch,
+} from 'react-redux';
+import {
+    useLocation,
     Routes,
     Route,
 } from 'react-router-dom';
 
+import {
+    getMenuItems,
+} from '../../services/actions/order';
+import ProtectedRoute from '../protected-route';
+import AppHeader from '../app-header/app-header';
 import {
     HomePage,
     LoginPage,
@@ -15,40 +23,79 @@ import {
     IngredientPage,
     NotFound404,
 } from '../../pages';
-import {
-    ProtectedRoute,
-} from '../protected-route';
 
 const App = () => {
 
+    const dispatch = useDispatch();
+    const location = useLocation();
+    const background = location.state?.background;
+
+    React.useEffect(
+        () => {
+
+            (
+                async () => {
+                    await dispatch(getMenuItems());
+                }
+            )();
+
+        }
+        , [
+            dispatch,
+        ]
+    );
+
     return (
-        <BrowserRouter>
-            <Routes>
+        <React.Fragment>
+            <AppHeader />
+            <Routes
+                location={background ?? location}
+            >
                 <Route
                     path="/"
                     element={<HomePage />}
                 />
                 <Route
                     path="/login"
-                    element={<LoginPage />}
+                    element={
+                        <ProtectedRoute
+                            children={<LoginPage />}
+                            anonymous={true}
+                        />
+                    }
                 />
                 <Route
                     path="/register"
-                    element={<RegisterPage />}
+                    element={
+                        <ProtectedRoute
+                            children={<RegisterPage />}
+                            anonymous={true}
+                        />
+                    }
                 />
                 <Route
                     path="/forgot-password"
-                    element={<ForgotPasswordPage />}
+                    element={
+                        <ProtectedRoute
+                            children={<ForgotPasswordPage />}
+                            anonymous={true}
+                        />
+                    }
                 />
                 <Route
                     path="/reset-password"
-                    element={<ResetPasswordPage />}
+                    element={
+                        <ProtectedRoute
+                            children={<ResetPasswordPage />}
+                            anonymous={true}
+                        />
+                    }
                 />
                 <Route
                     path="/profile"
                     element={
                         <ProtectedRoute
-                            element={<ProfilePage />}
+                            children={<ProfilePage />}
                         />
                     }
                 />
@@ -61,7 +108,7 @@ const App = () => {
                     element={<NotFound404 />}
                 />
             </Routes>
-        </BrowserRouter>
+        </React.Fragment>
     );
 
 };

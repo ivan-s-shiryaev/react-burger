@@ -22,7 +22,6 @@ import {
     updateAuthUser,
     readAuthLogout,
 } from '../services/actions/auth';
-import AppHeader from '../components/app-header/app-header';
 import styles from './profile.module.css';
 
 export function ProfilePage() {
@@ -38,6 +37,7 @@ export function ProfilePage() {
             name,
             email,
         },
+        request,
     } = useSelector((state) => state.auth.user);
 
     const [ data, setData ] = React.useState({ name, email, password: '' });
@@ -176,7 +176,6 @@ export function ProfilePage() {
 
     return (
         <React.Fragment>
-            <AppHeader />
             <main
                 className={`${styles.wrapper} pl-5 pr-5`}
             >
@@ -232,6 +231,7 @@ export function ProfilePage() {
                                         <Button
                                             htmlType="reset"
                                             type="secondary"
+                                            disabled={request}
                                             size="medium"
                                         >
                                             Отмена
@@ -239,6 +239,7 @@ export function ProfilePage() {
                                         <Button
                                             htmlType="submit"
                                             type="primary"
+                                            disabled={request}
                                             size="medium"
                                         >
                                             Сохранить

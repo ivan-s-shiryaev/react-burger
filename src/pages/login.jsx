@@ -4,7 +4,7 @@ import {
     useSelector,
 } from 'react-redux';
 import {
-    Navigate,
+    useNavigate,
     Link,
 } from 'react-router-dom';
 import {
@@ -21,12 +21,12 @@ import {
     SET_AUTH_LOGIN_DATA,
     readAuthLogin,
 } from '../services/actions/auth';
-import AppHeader from '../components/app-header/app-header';
 import styles from './login.module.css';
 
 export function LoginPage() {
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const {
         data: {
@@ -35,11 +35,8 @@ export function LoginPage() {
         },
         request,
     } = useSelector((state) => state.auth.login);
-    const {
-        data: user,
-    } = useSelector((state) => state.auth.user);
 
-    const handleButtonClick = React.useCallback(
+    const onFormSubmit = React.useCallback(
         (event) => {
 
             event.preventDefault();
@@ -53,7 +50,9 @@ export function LoginPage() {
 
                 (
                     async () => {
-                        await dispatch(readAuthLogin({ email, password }));
+                        if (await dispatch(readAuthLogin({ email, password }))) {
+                            navigate('/', {replace: true});
+                        }
                     }
                 )();
 
@@ -62,6 +61,7 @@ export function LoginPage() {
         }
         , [
             dispatch,
+            navigate,
             email,
             password,
         ]
@@ -79,18 +79,13 @@ export function LoginPage() {
         , [ dispatch ]
     );
 
-    return user?.email
-        ? (
-            <Navigate
-                to="/"
-                replace
-            />
-        )
-        : (
-            <React.Fragment>
-                <AppHeader />
-                <main
-                    className={styles.wrapper}
+    return (
+        <React.Fragment>
+            <main
+                className={styles.wrapper}
+            >
+                <form
+                    onSubmit={onFormSubmit}
                 >
                     <article
                         className={styles.container}
@@ -117,9 +112,8 @@ export function LoginPage() {
                             extraClass="mt-6"
                         />
                         <Button
-                            htmlType="button"
+                            htmlType="submit"
                             type="primary"
-                            onClick={handleButtonClick}
                             disabled={request}
                             size="medium"
                             extraClass="mt-6"
@@ -137,9 +131,9 @@ export function LoginPage() {
                             Забыли пароль? <Link to="/forgot-password">Восстановить пароль</Link>
                         </p>
                     </article>
-                </main>
-            </React.Fragment>
-        )
-    ;
+                </form>
+            </main>
+        </React.Fragment>
+    );
 
 }

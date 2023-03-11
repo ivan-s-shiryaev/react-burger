@@ -83,11 +83,14 @@ export const menuReducer = (state = initialStateMenu, action) => {
         }
 
         case SET_MENU_ITEM: {
+
             const item = state.items.find((value) => value._id === action.payload);
+
             return {
                 ...state,
                 item: item === undefined ? null : {...item},
             };
+
         }
 
         case SET_MENU_CATEGORY: {

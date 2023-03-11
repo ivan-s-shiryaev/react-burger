@@ -8,6 +8,9 @@ import {
     createStore,
     applyMiddleware,
 } from 'redux';
+import {
+    BrowserRouter,
+} from 'react-router-dom';
 import thunk from 'redux-thunk';
 import reportWebVitals from './reportWebVitals';
 
@@ -31,7 +34,9 @@ ReactDOM.createRoot(
 ).render(
     <React.StrictMode>
         <Provider store={store}>
-            <App />
+            <BrowserRouter>
+                <App />
+            </BrowserRouter>
         </Provider>
     </React.StrictMode>
 );

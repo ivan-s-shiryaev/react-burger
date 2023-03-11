@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+    useLocation,
     Link,
 } from 'react-router-dom';
 import {
@@ -19,6 +20,8 @@ import {
 import burgerIngredientStyles from './burger-ingredient.module.css';
 
 const BurgerIngredient = (props) => {
+
+    const location = useLocation();
 
     const {
         _id: id,
@@ -52,7 +55,16 @@ const BurgerIngredient = (props) => {
         >
             <Link
                 to={`/ingredients/${id}`}
-                state={{ modal: true }}
+                state={{
+                    background: {
+                        ...location,
+                        state: {
+                            ...location.state,
+                            id,
+                        },
+                    },
+                }}
+                replace
             >
                 {
                     count > 0 && (

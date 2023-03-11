@@ -4,34 +4,26 @@ import {
     useSelector,
 } from 'react-redux';
 import {
-    useNavigate,
-    useLocation,
     useParams,
     Link,
 } from 'react-router-dom';
 
 import {
     SET_MENU_ITEM,
-    getMenuItems,
 } from '../services/actions/order';
-import Modal from '../components/modal/modal';
+// import Modal from '../components/modal/modal';
 import IngredientDetails from '../components/ingredient-details/ingredient-details';
-import AppHeader from '../components/app-header/app-header';
 import styles from './ingredient.module.css';
 
 export function IngredientPage() {
 
     const dispatch = useDispatch();
-    const navigate = useNavigate();
-    const location = useLocation();
-
-    const { id } = useParams();
-    const modal = !!location.state?.modal;
-
     const {
         item,
         items,
+        itemsRequest: request,
     } = useSelector((state) => state.menu);
+    const { id } = useParams();
 
     React.useEffect(
         ()=> {
@@ -41,67 +33,56 @@ export function IngredientPage() {
                 payload: null,
             });
 
-            if (modal && items.length > 0) {
+            if (items.length > 0) {
                 dispatch({
                     type: SET_MENU_ITEM,
                     payload: id,
                 });
-            } else {
-                (
-                    async () => {
-
-                        await dispatch(getMenuItems());
-
-                        dispatch({
-                            type: SET_MENU_ITEM,
-                            payload: id,
-                        });
-
-                    }
-                )();
             }
 
         }
         , [
             dispatch,
-            modal,
+            items.length,
             id,
-            items,
         ]
     );
 
-    const handleMenuItemModalClose = React.useCallback(
-        () => {
+    // const handleMenuItemModalClose = React.useCallback(
+    //     () => {
 
-            dispatch({
-                type: SET_MENU_ITEM,
-                payload: null,
-            });
+    //         dispatch({
+    //             type: SET_MENU_ITEM,
+    //             payload: null,
+    //         });
 
-            navigate('/', {replace: true});
+    //         navigate('/', {replace: true});
 
-        }
-        , [
-            dispatch,
-            navigate,
-        ]
-    );
+    //     }
+    //     , [
+    //         dispatch,
+    //         navigate,
+    //     ]
+    // );
 
     return (
         <React.Fragment>
-            <AppHeader />
+                {/* // modal
+                // ? item
+                //     ? (
+                //         <Modal
+                //             header="Детали ингредиента"
+                //             handleClose={handleMenuItemModalClose}
+                //         >
+                //             <IngredientDetails />
+                //         </Modal>
+                //     )
+                //     : null
+                // : ( */}
             {
-                modal
-                ? item
-                    ? (
-                        <Modal
-                            header="Детали ингредиента"
-                            handleClose={handleMenuItemModalClose}
-                        >
-                            <IngredientDetails />
-                        </Modal>
-                    )
-                    : null
+                items.length === 0
+                || request
+                ? null
                 : (
                     <main
                         className={styles.wrapper}
@@ -140,6 +121,7 @@ export function IngredientPage() {
                     </main>
                 )
             }
+                {/* // ) */}
         </React.Fragment>
     );
 
