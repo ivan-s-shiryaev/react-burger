@@ -48,9 +48,15 @@ header > nav.menu > ul > li > a {
     height: 100%;
     padding: 0 20px;
     text-decoration: none;
-    color: inherit;
     white-space: nowrap;
     overflow: hidden;
+}
+
+header > nav.menu > ul > li > a.text_color_active {
+    color: var(--text-primary-color);
+}
+header > nav.menu > ul > li > a.text_color_active > svg {
+    fill: var(--text-primary-color);
 }
 
 header > nav.menu > ul > li > a > span {

@@ -10,10 +10,15 @@ h2.header {
     overflow: hidden;
 }
 
+.container > h3 {
+    text-align: center;
+}
+
 .container > ul {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    width: 100%;
     margin: 0;
     padding: 0;
     list-style-type: none;

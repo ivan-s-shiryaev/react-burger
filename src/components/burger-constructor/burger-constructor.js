@@ -1,8 +1,11 @@
 import React from 'react';
 import {
-    useSelector,
     useDispatch,
+    useSelector,
 } from 'react-redux';
+import {
+    useNavigate,
+} from 'react-router-dom';
 import {
     useDrop,
 } from "react-dnd";
@@ -16,13 +19,16 @@ import {
     HIDE_MODAL,
     addOrderItem,
     getOrderStatus,
-} from '../../services/actions';
+} from '../../services/actions/order';
 import Modal from '../modal/modal';
 import OrderDetails from '../order-details/order-details';
 import OrderItem from '../order-item/order-item';
 import burgerConstructorStyles from './burger-constructor.module.css';
 
 const BurgerConstructor = (props) => {
+
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const {
         menu: {
@@ -35,11 +41,16 @@ const BurgerConstructor = (props) => {
                 unlocked,
             },
             status,
+            statusRequest: request,
+        },
+        auth: {
+            user: {
+                data: user,
+            },
         },
     } = useSelector((state) => state);
-    const summary = total.locked + total.unlocked;
 
-    const dispatch = useDispatch();
+    const summary = total.locked + total.unlocked;
 
     const [, dropRef] = useDrop({
         accept: 'menu',
@@ -54,16 +65,27 @@ const BurgerConstructor = (props) => {
             event.preventDefault();
             event.stopPropagation();
 
-            dispatch(getOrderStatus({ locked, unlocked }));
-
-            dispatch({
-                type: SHOW_MODAL,
-                payload: 'order',
-            });
+            user?.email
+                ? (
+                    async () => {
+    
+                        await dispatch(getOrderStatus({ locked, unlocked }));
+    
+                        dispatch({
+                            type: SHOW_MODAL,
+                            payload: 'order',
+                        });
+    
+                    }
+                )()
+                : navigate('/login');
+            ;
 
         }
         , [
             dispatch,
+            navigate,
+            user?.email,
             locked,
             unlocked,
         ]
@@ -163,8 +185,9 @@ const BurgerConstructor = (props) => {
                 <Button
                     htmlType="button"
                     type="primary"
+                    onClick={handleOrderCheckoutClick}
+                    disabled={summary === 0 || request}
                     size="large"
-                    onClick={total.locked + total.unlocked > 0 ? handleOrderCheckoutClick : undefined}
                 >
                     Оформить заказ
                 </Button>
