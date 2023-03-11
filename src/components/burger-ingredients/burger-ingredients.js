@@ -30,22 +30,6 @@ const BurgerIngredients = (props) => {
         categories,
     } = useSelector((state) => state.menu);
 
-    // React.useEffect(
-    //     ()=> {
-    //         if (items.length === 0) {
-    //             (
-    //                 async () => {
-    //                     await dispatch(getMenuItems());
-    //                 }
-    //             )();
-    //         }
-    //     }
-    //     , [
-    //         dispatch,
-    //         items.length,
-    //     ]
-    // );
-
     const categoryRefs = React.useMemo(
         ()=> [...categories].reduce(
             (accumulator, value) => accumulator.set(value, React.createRef())

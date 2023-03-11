@@ -11,7 +11,6 @@ import {
 import {
     SET_MENU_ITEM,
 } from '../services/actions/order';
-// import Modal from '../components/modal/modal';
 import IngredientDetails from '../components/ingredient-details/ingredient-details';
 import styles from './ingredient.module.css';
 
@@ -48,37 +47,8 @@ export function IngredientPage() {
         ]
     );
 
-    // const handleMenuItemModalClose = React.useCallback(
-    //     () => {
-
-    //         dispatch({
-    //             type: SET_MENU_ITEM,
-    //             payload: null,
-    //         });
-
-    //         navigate('/', {replace: true});
-
-    //     }
-    //     , [
-    //         dispatch,
-    //         navigate,
-    //     ]
-    // );
-
     return (
         <React.Fragment>
-                {/* // modal
-                // ? item
-                //     ? (
-                //         <Modal
-                //             header="Детали ингредиента"
-                //             handleClose={handleMenuItemModalClose}
-                //         >
-                //             <IngredientDetails />
-                //         </Modal>
-                //     )
-                //     : null
-                // : ( */}
             {
                 items.length === 0
                 || request
@@ -121,7 +91,6 @@ export function IngredientPage() {
                     </main>
                 )
             }
-                {/* // ) */}
         </React.Fragment>
     );
 
