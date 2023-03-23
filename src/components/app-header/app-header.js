@@ -1,41 +1,54 @@
 import React from 'react';
 import {
+    NavLink,
+    Link,
+} from 'react-router-dom';
+import {
 	Logo,
 	BurgerIcon,
 	ListIcon,
 	ProfileIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-import appHeaderStyles from './app-header.module.css';
+import styles from './app-header.module.css';
 
 const AppHeader = () => {
+
+    const isNavLinkActive = React.useCallback(
+        ({ isActive }) => {
+
+            const result = 'text text_type_main-default';
+
+            return isActive ? `${result} ${styles.text_color_active}` : `${result} text_color_inactive`;
+
+        }
+        , []
+    );
 
     return (
         <header
             className="pt-4 pb-4"
         >
             <nav
-                className={appHeaderStyles.menu}
+                className={styles.menu}
             >
                 <ul>
-                    <li
-                        className="text text_type_main-default"
-                    >
-                        <a
-                            href="/"
+                    <li>
+                        <NavLink
+                            to="/"
+                            className={isNavLinkActive}
                         >
                             <BurgerIcon
-                                type="primary"
+                                type="secondary"
                             />
                             <span>
                                 Конструктор
                             </span>
-                        </a>
+                        </NavLink>
                     </li>
-                    <li
-                        className="text text_type_main-default text_color_inactive"
-                    >
-                        <a
-                            href="/"
+                    <li>
+                        <NavLink
+                            to="/comingsoon"
+                            className={isNavLinkActive}
                         >
                             <ListIcon
                                 type="secondary"
@@ -43,19 +56,18 @@ const AppHeader = () => {
                             <span>
                                 Лента заказов
                             </span>
-                        </a>
+                        </NavLink>
                     </li>
                 </ul>
             </nav>
             <nav
-                className={appHeaderStyles.menu}
+                className={styles.menu}
             >
                 <ul>
-                    <li
-                        className="text text_type_main-default text_color_inactive"
-                    >
-                        <a
-                            href="/"
+                    <li>
+                        <NavLink
+                            to="/profile"
+                            className={isNavLinkActive}
                         >
                             <ProfileIcon
                                 type="secondary"
@@ -63,15 +75,15 @@ const AppHeader = () => {
                             <span>
                                 Личный кабинет
                             </span>
-                        </a>
+                        </NavLink>
                     </li>
                 </ul>
             </nav>
-            <a
-                href="/"
+            <Link
+                to="/"
             >
                 <Logo />
-            </a>
+            </Link>
         </header>
     );
 

@@ -1,7 +1,8 @@
 import React from 'react';
 import {
-    useDispatch,
-} from 'react-redux';
+    useLocation,
+    Link,
+} from 'react-router-dom';
 import {
     useDrag
 } from "react-dnd";
@@ -16,13 +17,11 @@ import {
 import {
     INGREDIENT_PROPTYPES,
 } from '../../constants';
-import {
-    SET_MENU_ITEM,
-    SHOW_MODAL,
-} from '../../services/actions';
 import burgerIngredientStyles from './burger-ingredient.module.css';
 
 const BurgerIngredient = (props) => {
+
+    const location = useLocation();
 
     const {
         _id: id,
@@ -32,8 +31,6 @@ const BurgerIngredient = (props) => {
         count,
         image_large,
     } = props;
-
-    const dispatch = useDispatch();
 
     const [{ isDragging }, dragRef] = useDrag({
         type: 'menu',
@@ -50,35 +47,24 @@ const BurgerIngredient = (props) => {
         },
     });
 
-    const handleMenuItemClick = React.useCallback(
-        (id) => (event) => {
-
-            event.preventDefault();
-            event.stopPropagation();
-
-            dispatch({
-                type: SET_MENU_ITEM,
-                payload: id,
-            });
-
-            dispatch({
-                type: SHOW_MODAL,
-                payload: 'menu',
-            });
-    
-        }
-        , [ dispatch ]
-    );
-
     return (
         
         <li
             ref={dragRef}
             className={`${burgerIngredientStyles.container} ${isDragging ? burgerIngredientStyles.dragging : ''}`}
         >
-            <a
-                href="/"
-                onClick={handleMenuItemClick(id)}
+            <Link
+                to={`/ingredients/${id}`}
+                state={{
+                    background: {
+                        ...location,
+                        state: {
+                            ...location.state,
+                            id,
+                        },
+                    },
+                }}
+                replace
             >
                 {
                     count > 0 && (
@@ -107,7 +93,7 @@ const BurgerIngredient = (props) => {
                 >
                     {name}
                 </h3>
-            </a>
+            </Link>
         </li>
     );
 

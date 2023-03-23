@@ -1,42 +1,113 @@
 import React from 'react';
 import {
-    DndProvider,
-} from 'react-dnd';
+    useDispatch,
+} from 'react-redux';
 import {
-    HTML5Backend,
-} from 'react-dnd-html5-backend';
+    useLocation,
+    Routes,
+    Route,
+} from 'react-router-dom';
 
+import {
+    getMenuItems,
+} from '../../services/actions/order';
+import ProtectedRoute from '../protected-route';
 import AppHeader from '../app-header/app-header';
-import BurgerIngredients from '../burger-ingredients/burger-ingredients'
-import BurgerConstructor from '../burger-constructor/burger-constructor'
-import withModal from '../hocs/with-modal';
-import appStyles from './app.module.css';
-
-const WithModalBurgerIngredients = withModal(BurgerIngredients);
-const WithModalBurgerConstructor = withModal(BurgerConstructor);
+import {
+    HomePage,
+    LoginPage,
+    RegisterPage,
+    ForgotPasswordPage,
+    ResetPasswordPage,
+    ProfilePage,
+    IngredientPage,
+    NotFound404,
+} from '../../pages';
 
 const App = () => {
+
+    const dispatch = useDispatch();
+    const location = useLocation();
+    const background = location.state?.background;
+
+    React.useEffect(
+        () => {
+
+            (
+                async () => {
+                    await dispatch(getMenuItems());
+                }
+            )();
+
+        }
+        , [
+            dispatch,
+        ]
+    );
 
     return (
         <React.Fragment>
             <AppHeader />
-            <DndProvider
-                backend={HTML5Backend}
+            <Routes
+                location={background ?? location}
             >
-                <main
-                    className={appStyles.home}
-                >
-                    <article>
-                        <h1
-                            className="text text_type_main-large mt-10 mb-5"
-                        >
-                            Соберите бургер
-                        </h1>
-                        <WithModalBurgerIngredients />
-                    </article>
-                    <WithModalBurgerConstructor />
-                </main>
-            </DndProvider>
+                <Route
+                    path="/"
+                    element={<HomePage />}
+                />
+                <Route
+                    path="/login"
+                    element={
+                        <ProtectedRoute
+                            children={<LoginPage />}
+                            anonymous={true}
+                        />
+                    }
+                />
+                <Route
+                    path="/register"
+                    element={
+                        <ProtectedRoute
+                            children={<RegisterPage />}
+                            anonymous={true}
+                        />
+                    }
+                />
+                <Route
+                    path="/forgot-password"
+                    element={
+                        <ProtectedRoute
+                            children={<ForgotPasswordPage />}
+                            anonymous={true}
+                        />
+                    }
+                />
+                <Route
+                    path="/reset-password"
+                    element={
+                        <ProtectedRoute
+                            children={<ResetPasswordPage />}
+                            anonymous={true}
+                        />
+                    }
+                />
+                <Route
+                    path="/profile"
+                    element={
+                        <ProtectedRoute
+                            children={<ProfilePage />}
+                        />
+                    }
+                />
+                <Route
+                    path="/ingredients/:id"
+                    element={<IngredientPage />}
+                />
+                <Route
+                    path="*"
+                    element={<NotFound404 />}
+                />
+            </Routes>
         </React.Fragment>
     );
 

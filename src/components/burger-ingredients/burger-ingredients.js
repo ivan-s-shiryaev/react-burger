@@ -14,8 +14,7 @@ import {
     SET_MENU_ITEM,
     SET_MENU_CATEGORY,
     HIDE_MODAL,
-    getMenuItems,
-} from '../../services/actions';
+} from '../../services/actions/order';
 import Modal from '../modal/modal';
 import IngredientDetails from '../ingredient-details/ingredient-details';
 import IngredientsCategory from '../ingredients-category/ingredients-category';
@@ -23,20 +22,13 @@ import burgerIngredientsStyles from './burger-ingredients.module.css';
 
 const BurgerIngredients = (props) => {
 
+    const dispatch = useDispatch();
+
     const {
         item,
         category,
         categories,
     } = useSelector((state) => state.menu);
-
-    const dispatch = useDispatch();
-
-    React.useEffect(
-        ()=> {
-            dispatch(getMenuItems());
-        }
-        , [ dispatch ]
-    );
 
     const categoryRefs = React.useMemo(
         ()=> [...categories].reduce(

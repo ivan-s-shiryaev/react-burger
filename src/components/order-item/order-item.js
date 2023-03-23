@@ -18,7 +18,7 @@ import {
 import {
     REORDER_ORDER_ITEMS,
     removeOrderItem,
-} from '../../services/actions';
+} from '../../services/actions/order';
 import orderItemStyles from './order-item.module.css';
 
 const OrderItem = (props) => {
