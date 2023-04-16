@@ -5,7 +5,7 @@ import {
   FormEvent,
   ChangeEvent,
 } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "../hooks/redux";
 import { useNavigate, useLocation, Navigate, Link } from "react-router-dom";
 import {
   EmailInput,
@@ -39,7 +39,7 @@ export function ForgotPasswordPage() {
 
       if (email && validateEmail(email)) {
         (async () => {
-          if (await dispatch(readAuthForgot({ email }) as any)) {
+          if (await dispatch(readAuthForgot({ email }))) {
             navigate("/reset-password", {
               state: { ...location.state, forgot: true },
             });
@@ -55,11 +55,11 @@ export function ForgotPasswordPage() {
       dispatch({
         type: SET_AUTH_FORGOT_DATA,
         payload: {
-          [event.target.name]: event.target.value,
+          email: event.target.name === "email" ? event.target.value : email,
         },
       });
     },
-    [dispatch]
+    [dispatch, email]
   );
 
   return user?.email ? (

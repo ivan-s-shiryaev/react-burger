@@ -1,5 +1,5 @@
 import { FC, useEffect, Fragment } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch } from "../../hooks/redux";
 import { useLocation, Routes, Route } from "react-router-dom";
 
 import { getMenuItems } from "../../services/actions/order";
@@ -23,7 +23,7 @@ const App: FC = () => {
 
   useEffect(() => {
     (async () => {
-      await dispatch(getMenuItems() as any);
+      await dispatch(getMenuItems());
     })();
   }, [dispatch]);
 

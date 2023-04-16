@@ -6,8 +6,8 @@ import {
   FormEvent,
   ChangeEvent,
 } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useLocation, Navigate, Link } from "react-router-dom";
+import { useDispatch, useSelector } from "../hooks/redux";
 import {
   Input,
   PasswordInput,
@@ -47,7 +47,7 @@ export function ResetPasswordPage() {
 
       if (password && validatePassword(password)) {
         (async () => {
-          if (await dispatch(readAuthReset({ password, token }) as any)) {
+          if (await dispatch(readAuthReset({ password, token }))) {
             navigate("/login", { replace: true });
           } else {
             navigate("/forgot-password", { replace: true });
@@ -63,11 +63,13 @@ export function ResetPasswordPage() {
       dispatch({
         type: SET_AUTH_RESET_DATA,
         payload: {
-          [event.target.name]: event.target.value,
+          password:
+            event.target.name === "password" ? event.target.value : password,
+          token,
         },
       });
     },
-    [dispatch]
+    [dispatch, password, token]
   );
 
   return user?.email ? (

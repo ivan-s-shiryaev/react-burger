@@ -1,14 +1,14 @@
 import { useEffect, Fragment } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "../hooks/redux";
 import { useParams, Link } from "react-router-dom";
 
-import { TMenu } from "../utils";
+import { TMenuState } from "../utils";
 import { SET_MENU_ITEM } from "../services/actions/order";
 import IngredientDetails from "../components/ingredient-details/ingredient-details";
 import styles from "./ingredient.module.css";
 
 type TState = {
-  menu: TMenu;
+  menu: TMenuState;
 };
 
 export function IngredientPage() {
@@ -17,7 +17,7 @@ export function IngredientPage() {
     item,
     items,
     itemsRequest: request,
-  } = useSelector((state: TState): TMenu => state.menu);
+  } = useSelector((state: TState): TMenuState => state.menu);
   const { id } = useParams();
 
   useEffect(() => {
@@ -29,7 +29,7 @@ export function IngredientPage() {
     if (items.length > 0) {
       dispatch({
         type: SET_MENU_ITEM,
-        payload: id,
+        payload: id ?? null,
       });
     }
   }, [dispatch, items.length, id]);

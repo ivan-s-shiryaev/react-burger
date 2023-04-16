@@ -7,29 +7,26 @@ import {
   RefObject,
   Fragment,
 } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "../../hooks/redux";
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
 
-import { PWithModal, TMenu, getMenuCategoryTitle } from "../../utils";
-import {
-  SET_MENU_ITEM,
-  SET_MENU_CATEGORY,
-  HIDE_MODAL,
-} from "../../services/actions/order";
+import { PWithModal, TMenuState, getMenuCategoryTitle } from "../../utils";
+import { SET_MENU_ITEM, SET_MENU_CATEGORY } from "../../services/actions/order";
+import { HIDE_MODAL } from "../../services/actions/modal";
 import Modal from "../modal/modal";
 import IngredientDetails from "../ingredient-details/ingredient-details";
 import IngredientsCategory from "../ingredients-category/ingredients-category";
 import burgerIngredientsStyles from "./burger-ingredients.module.css";
 
 type TState = {
-  menu: TMenu;
+  menu: TMenuState;
 };
 
 const BurgerIngredients: FC<PWithModal> = (props) => {
   const dispatch = useDispatch();
 
   const { item, category, categories } = useSelector(
-    (state: TState): TMenu => state.menu
+    (state: TState): TMenuState => state.menu
   );
 
   const categoryRefs = useMemo(

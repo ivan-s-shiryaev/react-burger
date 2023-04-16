@@ -1,25 +1,27 @@
 import { FC, useCallback, SyntheticEvent } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useDrop } from "react-dnd";
+import { useDispatch, useSelector } from "../../hooks/redux";
 import {
   Button,
   CurrencyIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 
-import { PWithModal, TAuth, TOrder, TMenu } from "../../utils";
 import {
-  SHOW_MODAL,
-  HIDE_MODAL,
-  addOrderItem,
-  getOrderStatus,
-} from "../../services/actions/order";
+  PWithModal,
+  TAuth,
+  TOrderState,
+  TMenuState,
+  TDnDItem,
+} from "../../utils";
+import { addOrderItem, getOrderStatus } from "../../services/actions/order";
+import { SHOW_MODAL, HIDE_MODAL } from "../../services/actions/modal";
 import Modal from "../modal/modal";
 import OrderDetails from "../order-details/order-details";
 import OrderItem from "../order-item/order-item";
 import burgerConstructorStyles from "./burger-constructor.module.css";
 
-type TState = { menu: TMenu; order: TOrder; auth: TAuth };
+type TState = { menu: TMenuState; order: TOrderState; auth: TAuth };
 
 const BurgerConstructor: FC<PWithModal> = (props) => {
   const dispatch = useDispatch();
@@ -42,8 +44,8 @@ const BurgerConstructor: FC<PWithModal> = (props) => {
 
   const [, dropRef] = useDrop({
     accept: "menu",
-    drop(item) {
-      dispatch(addOrderItem(item) as any);
+    drop(item: TDnDItem) {
+      dispatch(addOrderItem(item));
     },
   });
 
@@ -54,7 +56,7 @@ const BurgerConstructor: FC<PWithModal> = (props) => {
 
       user?.email
         ? (async () => {
-            await dispatch(getOrderStatus({ locked, unlocked }) as any);
+            await dispatch(getOrderStatus({ locked, unlocked }));
 
             dispatch({
               type: SHOW_MODAL,
@@ -149,7 +151,7 @@ const BurgerConstructor: FC<PWithModal> = (props) => {
           Оформить заказ
         </Button>
       </div>
-      {props.modal === "order" && status.number !== null && (
+      {props.modal === "order" && status.number !== 0 && (
         <Modal handleClose={handleOrderCheckoutModalClose}>
           <OrderDetails number={status.number} name={status.name} />
         </Modal>

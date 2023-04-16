@@ -1,5 +1,5 @@
 import { FC, useCallback, useRef, SyntheticEvent } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch } from "../../hooks/redux";
 import { useDrag, useDrop } from "react-dnd";
 import {
   ConstructorElement,
@@ -7,19 +7,13 @@ import {
 } from "@ya.praktikum/react-developer-burger-ui-components";
 
 import { Identifier } from "dnd-core";
-import { TIngredient } from "../../utils";
+import { TDnDItem, TIngredient } from "../../utils";
 import {
   REORDER_ORDER_ITEMS,
   removeOrderItem,
 } from "../../services/actions/order";
 import orderItemStyles from "./order-item.module.css";
 
-type TDnDItem = {
-  id: string;
-  type: string;
-  price: number;
-  index: number;
-};
 type TProps = TIngredient & {
   mode: "top" | "bottom" | undefined;
   index: number;
@@ -90,7 +84,7 @@ const OrderItem: FC<TProps> = (props) => {
       event.preventDefault();
       event.stopPropagation();
 
-      dispatch(removeOrderItem(item) as any);
+      dispatch(removeOrderItem(item));
     },
     [dispatch]
   );
@@ -116,7 +110,7 @@ const OrderItem: FC<TProps> = (props) => {
         price={price}
         thumbnail={image}
         handleClose={() => {
-          handleOrderItemTrashClick({ id, type, price, index });
+          handleOrderItemTrashClick({ id, type, price, index, uuid: "" });
         }}
       />
       {mode === undefined && (

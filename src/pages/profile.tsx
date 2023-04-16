@@ -9,8 +9,8 @@ import {
   ChangeEvent,
   Fragment,
 } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, NavLink } from "react-router-dom";
+import { useDispatch, useSelector } from "../hooks/redux";
 import {
   Button,
   Input,
@@ -93,7 +93,7 @@ export function ProfilePage() {
         (!data.password || (data.password && validatePassword(data.password)))
       ) {
         (async () => {
-          await dispatch(updateAuthUser({ data, token: accessToken }) as any);
+          await dispatch(updateAuthUser({ data, token: accessToken }));
         })();
 
         setData((state) => ({ ...state, password: "" }));
@@ -119,7 +119,7 @@ export function ProfilePage() {
 
   const onNavLinkLogoutClick = useCallback(() => {
     (async () => {
-      if (await dispatch(readAuthLogout({ token: refreshToken }) as any)) {
+      if (await dispatch(readAuthLogout({ token: refreshToken }))) {
         navigate("/login", { replace: true });
       }
     })();

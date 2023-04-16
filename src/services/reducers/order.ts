@@ -14,11 +14,12 @@ import {
   REORDER_ORDER_ITEMS,
   ADD_ORDER_ITEM,
   REMOVE_ORDER_ITEM,
-  SHOW_MODAL,
-  HIDE_MODAL,
+  TMenuActions,
+  TOrderActions,
 } from "../actions/order";
+import { TMenuItems, TMenuState, TOrderState } from "../../utils";
 
-const initialStateMenu = {
+const initialStateMenu: TMenuState = {
   item: null,
   items: [],
   itemsRequest: false,
@@ -26,7 +27,7 @@ const initialStateMenu = {
   category: "",
   categories: new Set(),
 };
-const initialStateOrder = {
+const initialStateOrder: TOrderState = {
   total: {
     locked: 0,
     unlocked: 0,
@@ -36,14 +37,17 @@ const initialStateOrder = {
     unlocked: [],
   },
   status: {
-    number: null,
+    number: 0,
     name: null,
   },
   statusRequest: false,
   statusError: false,
 };
 
-export const menuReducer = (state = initialStateMenu, action) => {
+export const menuReducer = (
+  state = initialStateMenu,
+  action: TMenuActions
+): TMenuState => {
   switch (action.type) {
     case GET_MENU_ITEMS_REQUEST: {
       return {
@@ -61,7 +65,7 @@ export const menuReducer = (state = initialStateMenu, action) => {
         category: action.payload[0].type,
         categories: action.payload.reduce(
           (accumulator, { type }) => accumulator.add(type),
-          new Set()
+          new Set<string>()
         ),
       };
     }
@@ -91,7 +95,7 @@ export const menuReducer = (state = initialStateMenu, action) => {
 
     case SET_MENU_CATEGORY: {
       const categories = state.categories;
-      const category = [...categories].find(
+      const category = Array.from(categories).find(
         (value) => value === action.payload
       );
 
@@ -106,7 +110,7 @@ export const menuReducer = (state = initialStateMenu, action) => {
       const items =
         item === undefined
           ? state.items
-          : state.items.reduce((accumulator, value) => {
+          : state.items.reduce((accumulator: TMenuItems, value) => {
               accumulator.push({
                 ...value,
                 count:
@@ -133,7 +137,7 @@ export const menuReducer = (state = initialStateMenu, action) => {
       const items =
         item === undefined
           ? state.items
-          : state.items.reduce((accumulator, value) => {
+          : state.items.reduce((accumulator: TMenuItems, value) => {
               accumulator.push({
                 ...value,
                 count:
@@ -158,7 +162,10 @@ export const menuReducer = (state = initialStateMenu, action) => {
   }
 };
 
-export const orderReducer = (state = initialStateOrder, action) => {
+export const orderReducer = (
+  state = initialStateOrder,
+  action: TOrderActions
+): TOrderState => {
   switch (action.type) {
     case GET_ORDER_STATUS_REQUEST: {
       return {
@@ -253,21 +260,6 @@ export const orderReducer = (state = initialStateOrder, action) => {
             },
           }
         : state;
-    }
-
-    default:
-      return state;
-  }
-};
-
-export const modalReducer = (state = "", action) => {
-  switch (action.type) {
-    case SHOW_MODAL: {
-      return action.payload;
-    }
-
-    case HIDE_MODAL: {
-      return false;
     }
 
     default:

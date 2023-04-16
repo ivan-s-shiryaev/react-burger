@@ -1,6 +1,6 @@
 import { FC, ReactElement, useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useLocation, Navigate } from "react-router-dom";
+import { useDispatch, useSelector } from "../hooks/redux";
 
 import {
   TAuth,
@@ -35,7 +35,7 @@ const ProtectedRoute: FC<TProps> = ({ children, anonymous = false }) => {
   useEffect(() => {
     if (isAuth && !isUser) {
       (async () => {
-        if (await dispatch(readAuthUser({ token: accessToken }) as any)) {
+        if (await dispatch(readAuthUser({ token: accessToken }))) {
           setIsUser(true);
         }
       })();
