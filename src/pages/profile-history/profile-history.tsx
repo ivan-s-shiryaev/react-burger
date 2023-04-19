@@ -1,13 +1,13 @@
 import { useEffect, useMemo } from "react";
-import { useDispatch, useSelector } from "../hooks/redux";
+import { useDispatch, useSelector } from "../../hooks/redux";
 
-import { BASE_URL_WS_USER } from "../constants";
-import { TOrderDataState, TOrderDataItems } from "../utils";
+import { BASE_URL_WS_USER } from "../../constants";
+import { TOrderDataState, TOrderDataItems } from "../../utils";
 import {
   START_ORDER_USER,
   DISCONNECT_ORDER_USER,
-} from "../services/actions/order";
-import OrderPanel from "../components/order-panel/order-panel";
+} from "../../services/actions/order";
+import OrderPanel from "../../components/order-panel/order-panel";
 import styles from "./profile-history.module.css";
 
 type TState = {

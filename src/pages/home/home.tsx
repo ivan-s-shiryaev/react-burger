@@ -1,16 +1,16 @@
 import { useCallback, useEffect, Fragment } from "react";
-import { useDispatch, useSelector } from "../hooks/redux";
+import { useDispatch, useSelector } from "../../hooks/redux";
 import { useNavigate, useLocation } from "react-router-dom";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
-import { TMenuState } from "../utils";
-import { SET_MENU_ITEM } from "../services/actions/order";
-import BurgerIngredients from "../components/burger-ingredients/burger-ingredients";
-import BurgerConstructor from "../components/burger-constructor/burger-constructor";
-import IngredientDetails from "../components/ingredient-details/ingredient-details";
-import Modal from "../components/modal/modal";
-import withModal from "../components/hocs/with-modal";
+import { TMenuState } from "../../utils";
+import { SET_MENU_ITEM } from "../../services/actions/order";
+import BurgerIngredients from "../../components/burger-ingredients/burger-ingredients";
+import BurgerConstructor from "../../components/burger-constructor/burger-constructor";
+import IngredientDetails from "../../components/ingredient-details/ingredient-details";
+import Modal from "../../components/modal/modal";
+import withModal from "../../components/hocs/with-modal";
 import styles from "./home.module.css";
 
 type TState = {

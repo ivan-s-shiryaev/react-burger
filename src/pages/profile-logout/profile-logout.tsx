@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
 
-import { useDispatch } from "../hooks/redux";
-import { getCookie } from "../utils";
-import { readAuthLogout } from "../services/actions/auth";
+import { useDispatch } from "../../hooks/redux";
+import { getCookie } from "../../utils";
+import { readAuthLogout } from "../../services/actions/auth";
 import styles from "./profile-logout.module.css";
 
 export function ProfileLogoutPage() {

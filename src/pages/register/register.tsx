@@ -1,75 +1,100 @@
 import {
   useCallback,
+  Fragment,
   FormEventHandler,
   FormEvent,
   ChangeEvent,
-  Fragment,
 } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { useDispatch, useSelector } from "../hooks/redux";
+import { useDispatch, useSelector } from "../../hooks/redux";
+import { Navigate, Link } from "react-router-dom";
 import {
+  Input,
   EmailInput,
   PasswordInput,
   Button,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 
-import { TAuth, TAuthLogin, validateEmail, validatePassword } from "../utils";
-import { SET_AUTH_LOGIN_DATA, readAuthLogin } from "../services/actions/auth";
-import styles from "./login.module.css";
+import {
+  TAuth,
+  TAuthUser,
+  TAuthRegister,
+  validateName,
+  validateEmail,
+  validatePassword,
+} from "../../utils";
+import {
+  SET_AUTH_REGISTER_DATA,
+  readAuthRegister,
+} from "../../services/actions/auth";
+import styles from "./register.module.css";
 
 type TState = {
   auth: TAuth;
 };
 
-export function LoginPage() {
+export function RegisterPage() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const {
-    data: { email, password },
+    data: { email, name, password },
     request,
-  } = useSelector((state: TState): TAuthLogin => state.auth.login);
+  } = useSelector((state: TState): TAuthRegister => state.auth.register);
+  const { data: user } = useSelector(
+    (state: TState): TAuthUser => state.auth.user
+  );
 
   const onFormSubmit = useCallback<FormEventHandler>(
     (event: FormEvent) => {
       event.preventDefault();
 
       if (
+        name &&
         email &&
         password &&
+        validateName(name) &&
         validateEmail(email) &&
         validatePassword(password)
       ) {
         (async () => {
-          if (await dispatch(readAuthLogin({ email, password }))) {
-            navigate("/", { replace: true });
-          }
+          await dispatch(readAuthRegister({ email, name, password }));
         })();
       }
     },
-    [dispatch, navigate, email, password]
+    [dispatch, name, email, password]
   );
 
   const onInputChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
       dispatch({
-        type: SET_AUTH_LOGIN_DATA,
+        type: SET_AUTH_REGISTER_DATA,
         payload: {
+          name: event.target.name === "name" ? event.target.value : name,
           email: event.target.name === "email" ? event.target.value : email,
           password:
             event.target.name === "password" ? event.target.value : password,
         },
       });
     },
-    [dispatch, email, password]
+    [dispatch, name, email, password]
   );
 
-  return (
+  return user?.email ? (
+    <Navigate to="/" replace />
+  ) : (
     <Fragment>
       <main className={styles.wrapper}>
         <form onSubmit={onFormSubmit}>
           <article className={styles.container}>
-            <h1 className="text text_type_main-medium">Вход</h1>
+            <h1 className="text text_type_main-medium">Регистрация</h1>
+            <Input
+              type="text"
+              name={"name"}
+              value={name}
+              onChange={onInputChange}
+              disabled={request}
+              placeholder={"Имя"}
+              extraClass="mt-6"
+            />
             <EmailInput
               name={"email"}
               value={email}
@@ -93,15 +118,10 @@ export function LoginPage() {
               size="medium"
               extraClass="mt-6"
             >
-              Войти
+              Зарегистрироваться
             </Button>
             <p className="text text_type_main-default text_color_inactive mt-20">
-              Вы &mdash; новый пользователь?{" "}
-              <Link to="/register">Зарегистрироваться</Link>
-            </p>
-            <p className="text text_type_main-default text_color_inactive mt-4">
-              Забыли пароль?{" "}
-              <Link to="/forgot-password">Восстановить пароль</Link>
+              Уже зарегистрированы? <Link to="/login">Войти</Link>
             </p>
           </article>
         </form>

@@ -1,65 +1,78 @@
 import {
   useCallback,
+  useEffect,
   Fragment,
   FormEventHandler,
   FormEvent,
   ChangeEvent,
 } from "react";
-import { useDispatch, useSelector } from "../hooks/redux";
 import { useNavigate, useLocation, Navigate, Link } from "react-router-dom";
+import { useDispatch, useSelector } from "../../hooks/redux";
 import {
-  EmailInput,
+  Input,
+  PasswordInput,
   Button,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 
-import { TAuth, TAuthUser, TAuthForgot, validateEmail } from "../utils";
-import { SET_AUTH_FORGOT_DATA, readAuthForgot } from "../services/actions/auth";
-import styles from "./forgot-password.module.css";
+import { TAuth, TAuthUser, TAuthReset, validatePassword } from "../../utils";
+import {
+  SET_AUTH_RESET_DATA,
+  readAuthReset,
+} from "../../services/actions/auth";
+import styles from "./reset-password.module.css";
 
 type TState = {
   auth: TAuth;
 };
 
-export function ForgotPasswordPage() {
+export function ResetPasswordPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
 
   const {
-    data: { email },
+    data: { password, token },
     request,
-  } = useSelector((state: TState): TAuthForgot => state.auth.forgot);
+  } = useSelector((state: TState): TAuthReset => state.auth.reset);
   const { data: user } = useSelector(
     (state: TState): TAuthUser => state.auth.user
   );
+
+  useEffect(() => {
+    if (!location.state?.forgot) {
+      navigate("/forgot-password", { replace: true });
+    }
+  }, [navigate, location.state]);
 
   const onFormSubmit = useCallback<FormEventHandler>(
     (event: FormEvent) => {
       event.preventDefault();
 
-      if (email && validateEmail(email)) {
+      if (password && validatePassword(password)) {
         (async () => {
-          if (await dispatch(readAuthForgot({ email }))) {
-            navigate("/reset-password", {
-              state: { ...location.state, forgot: true },
-            });
+          if (await dispatch(readAuthReset({ password, token }))) {
+            navigate("/login", { replace: true });
+          } else {
+            navigate("/forgot-password", { replace: true });
           }
         })();
       }
     },
-    [dispatch, navigate, email, location.state]
+    [dispatch, navigate, password, token]
   );
 
   const onInputChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
       dispatch({
-        type: SET_AUTH_FORGOT_DATA,
+        type: SET_AUTH_RESET_DATA,
         payload: {
-          email: event.target.name === "email" ? event.target.value : email,
+          password:
+            event.target.name === "password" ? event.target.value : password,
+          token,
         },
       });
     },
-    [dispatch, email]
+    [dispatch, password, token]
   );
 
   return user?.email ? (
@@ -72,13 +85,21 @@ export function ForgotPasswordPage() {
             <h1 className="text text_type_main-medium">
               Восстановление пароля
             </h1>
-            <EmailInput
-              name={"email"}
-              value={email}
+            <PasswordInput
+              name={"password"}
+              value={password}
               onChange={onInputChange}
               disabled={request}
-              placeholder={"Укажите e-mail"}
-              isIcon={false}
+              placeholder={"Введите новый пароль"}
+              extraClass="mt-6"
+            />
+            <Input
+              type="text"
+              name={"token"}
+              value={token}
+              onChange={onInputChange}
+              disabled={request}
+              placeholder={"Введите код из письма"}
               extraClass="mt-6"
             />
             <Button
@@ -88,7 +109,7 @@ export function ForgotPasswordPage() {
               size="medium"
               extraClass="mt-6"
             >
-              Восстановить
+              Сохранить
             </Button>
             <p className="text text_type_main-default text_color_inactive mt-20">
               Вспомнили пароль? <Link to="/login">Войти</Link>

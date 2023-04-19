@@ -8,7 +8,7 @@ import {
   FormEvent,
   ChangeEvent,
 } from "react";
-import { useDispatch, useSelector } from "../hooks/redux";
+import { useDispatch, useSelector } from "../../hooks/redux";
 import {
   Button,
   Input,
@@ -21,8 +21,8 @@ import {
   validateEmail,
   validatePassword,
   getCookie,
-} from "../utils";
-import { updateAuthUser } from "../services/actions/auth";
+} from "../../utils";
+import { updateAuthUser } from "../../services/actions/auth";
 import styles from "./profile-edit.module.css";
 
 type TState = {

@@ -1,14 +1,14 @@
 import { useEffect, Fragment } from "react";
-import { useDispatch, useSelector } from "../hooks/redux";
+import { useDispatch, useSelector } from "../../hooks/redux";
 
-import { BASE_URL_WS_FEED } from "../constants";
+import { BASE_URL_WS_FEED } from "../../constants";
 import {
   START_ORDER_FEED,
   DISCONNECT_ORDER_FEED,
-} from "../services/actions/order";
-import { TOrderDataState } from "../utils";
-import OrderPanel from "../components/order-panel/order-panel";
-import OrderStatus from "../components/order-status/order-status";
+} from "../../services/actions/order";
+import { TOrderDataState } from "../../utils";
+import OrderPanel from "../../components/order-panel/order-panel";
+import OrderStatus from "../../components/order-status/order-status";
 import styles from "./feed.module.css";
 
 type TState = {

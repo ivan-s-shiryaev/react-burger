@@ -1,10 +1,10 @@
 import { useEffect, Fragment } from "react";
-import { useDispatch, useSelector } from "../hooks/redux";
+import { useDispatch, useSelector } from "../../hooks/redux";
 import { useParams, Link } from "react-router-dom";
 
-import { TMenuState } from "../utils";
-import { SET_MENU_ITEM } from "../services/actions/order";
-import IngredientDetails from "../components/ingredient-details/ingredient-details";
+import { TMenuState } from "../../utils";
+import { SET_MENU_ITEM } from "../../services/actions/order";
+import IngredientDetails from "../../components/ingredient-details/ingredient-details";
 import styles from "./ingredient.module.css";
 
 type TState = {

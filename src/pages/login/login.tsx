@@ -1,14 +1,13 @@
 import {
   useCallback,
-  Fragment,
   FormEventHandler,
   FormEvent,
   ChangeEvent,
+  Fragment,
 } from "react";
-import { useDispatch, useSelector } from "../hooks/redux";
-import { Navigate, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { useDispatch, useSelector } from "../../hooks/redux";
 import {
-  Input,
   EmailInput,
   PasswordInput,
   Button,
@@ -16,85 +15,69 @@ import {
 
 import {
   TAuth,
-  TAuthUser,
-  TAuthRegister,
-  validateName,
+  TAuthLogin,
   validateEmail,
   validatePassword,
-} from "../utils";
+} from "../../utils";
 import {
-  SET_AUTH_REGISTER_DATA,
-  readAuthRegister,
-} from "../services/actions/auth";
-import styles from "./register.module.css";
+  SET_AUTH_LOGIN_DATA,
+  readAuthLogin,
+} from "../../services/actions/auth";
+import styles from "./login.module.css";
 
 type TState = {
   auth: TAuth;
 };
 
-export function RegisterPage() {
+export function LoginPage() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const {
-    data: { email, name, password },
+    data: { email, password },
     request,
-  } = useSelector((state: TState): TAuthRegister => state.auth.register);
-  const { data: user } = useSelector(
-    (state: TState): TAuthUser => state.auth.user
-  );
+  } = useSelector((state: TState): TAuthLogin => state.auth.login);
 
   const onFormSubmit = useCallback<FormEventHandler>(
     (event: FormEvent) => {
       event.preventDefault();
 
       if (
-        name &&
         email &&
         password &&
-        validateName(name) &&
         validateEmail(email) &&
         validatePassword(password)
       ) {
         (async () => {
-          await dispatch(readAuthRegister({ email, name, password }));
+          if (await dispatch(readAuthLogin({ email, password }))) {
+            navigate("/", { replace: true });
+          }
         })();
       }
     },
-    [dispatch, name, email, password]
+    [dispatch, navigate, email, password]
   );
 
   const onInputChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
       dispatch({
-        type: SET_AUTH_REGISTER_DATA,
+        type: SET_AUTH_LOGIN_DATA,
         payload: {
-          name: event.target.name === "name" ? event.target.value : name,
           email: event.target.name === "email" ? event.target.value : email,
           password:
             event.target.name === "password" ? event.target.value : password,
         },
       });
     },
-    [dispatch, name, email, password]
+    [dispatch, email, password]
   );
 
-  return user?.email ? (
-    <Navigate to="/" replace />
-  ) : (
+  return (
     <Fragment>
       <main className={styles.wrapper}>
         <form onSubmit={onFormSubmit}>
           <article className={styles.container}>
-            <h1 className="text text_type_main-medium">Регистрация</h1>
-            <Input
-              type="text"
-              name={"name"}
-              value={name}
-              onChange={onInputChange}
-              disabled={request}
-              placeholder={"Имя"}
-              extraClass="mt-6"
-            />
+            <h1 className="text text_type_main-medium">Вход</h1>
             <EmailInput
               name={"email"}
               value={email}
@@ -118,10 +101,15 @@ export function RegisterPage() {
               size="medium"
               extraClass="mt-6"
             >
-              Зарегистрироваться
+              Войти
             </Button>
             <p className="text text_type_main-default text_color_inactive mt-20">
-              Уже зарегистрированы? <Link to="/login">Войти</Link>
+              Вы &mdash; новый пользователь?{" "}
+              <Link to="/register">Зарегистрироваться</Link>
+            </p>
+            <p className="text text_type_main-default text_color_inactive mt-4">
+              Забыли пароль?{" "}
+              <Link to="/forgot-password">Восстановить пароль</Link>
             </p>
           </article>
         </form>

@@ -5,6 +5,7 @@ import {
   CurrencyIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 
+import { ORDER_STATUS } from "../../constants";
 import { useDispatch, useSelector } from "../../hooks/redux";
 import { getOrderEntry } from "../../services/actions/order";
 import { TOrderDataState, TIngredient, TMenuState } from "../../utils";
@@ -41,10 +42,10 @@ const OrderInfo: FC<TProps> = (props) => {
 
     const state =
       entry?.status === "done"
-        ? "Выполнен"
+        ? ORDER_STATUS.done
         : entry?.status === "created"
-        ? "Создан"
-        : "Готовится";
+        ? ORDER_STATUS.created
+        : ORDER_STATUS.pending;
 
     const total = ingredientItems.reduce(
       (accumulator, item) => item.price + accumulator,

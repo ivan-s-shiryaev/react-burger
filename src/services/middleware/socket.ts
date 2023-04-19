@@ -3,6 +3,7 @@ import type { AnyAction, Middleware, MiddlewareAPI } from "redux";
 import type { RootState, TDispatch, TwsActions } from "../../utils";
 import { getEventError, getCookie } from "../../utils";
 import { refreshAuthToken } from "../actions/auth";
+import { WS_STATUS_CODE } from "../../constants";
 
 const socketMiddleware = (wsActions: TwsActions): Middleware => {
   return (store: MiddlewareAPI<TDispatch, RootState>) => {
@@ -15,21 +16,12 @@ const socketMiddleware = (wsActions: TwsActions): Middleware => {
       const { dispatch } = store;
 
       if (action.type === wsActions.onStart) {
-        let retry = 0;
-
         url = action.payload;
         if (action.auth) {
           url += `?token=${getCookie("access")}`;
         }
 
-        while (retry < 5) {
-          try {
-            socket = new WebSocket(url);
-            break;
-          } catch {
-            ++retry;
-          }
-        }
+        socket = new WebSocket(url);
 
         isConnected = true;
         window.clearTimeout(timerReconnect);
@@ -42,7 +34,7 @@ const socketMiddleware = (wsActions: TwsActions): Middleware => {
         };
 
         socket.onclose = (event) => {
-          if (event.code !== 1000) {
+          if (event.code !== WS_STATUS_CODE.CLOSE_NORMAL) {
             dispatch({
               type: wsActions.onError,
               payload: getEventError(event),

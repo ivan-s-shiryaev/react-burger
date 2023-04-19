@@ -15,7 +15,7 @@ const OrderStatus: FC<TProps> = (props) => {
   const { data, total, today } = props;
   const location = useLocation();
   const maxGroups = 2;
-  const maxItems = 3;
+  const maxItems = 10;
 
   const doneItems = useMemo(
     () =>

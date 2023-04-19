@@ -7,6 +7,7 @@ import {
   CurrencyIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 
+import { ORDER_STATUS } from "../../constants";
 import { TMenuState, TOrderEntry, TIngredient } from "../../utils";
 import styles from "./order-entry.module.css";
 
@@ -39,10 +40,10 @@ const OrderEntry: FC<TProps> = (props) => {
 
     const state =
       status === "done"
-        ? "Выполнен"
+        ? ORDER_STATUS.done
         : status === "created"
-        ? "Создан"
-        : "Готовится";
+        ? ORDER_STATUS.created
+        : ORDER_STATUS.pending;
 
     const data = ingredientItems.slice(0, maxData);
 
