@@ -16,8 +16,25 @@ import {
   REMOVE_ORDER_ITEM,
   TMenuActions,
   TOrderActions,
+  SUCCESS_ORDER_FEED,
+  ERROR_ORDER_FEED,
+  CLOSED_ORDER_FEED,
+  MESSAGE_ORDER_FEED,
+  TOrderDataActions,
+  SUCCESS_ORDER_USER,
+  ERROR_ORDER_USER,
+  CLOSED_ORDER_USER,
+  MESSAGE_ORDER_USER,
+  GET_ORDER_ENTRY_REQUEST,
+  GET_ORDER_ENTRY_SUCCESS,
+  GET_ORDER_ENTRY_ERROR,
 } from "../actions/order";
-import { TMenuItems, TMenuState, TOrderState } from "../../utils";
+import {
+  TMenuItems,
+  TMenuState,
+  TOrderState,
+  TOrderDataState,
+} from "../../utils";
 
 const initialStateMenu: TMenuState = {
   item: null,
@@ -40,8 +57,16 @@ const initialStateOrder: TOrderState = {
     number: 0,
     name: null,
   },
-  statusRequest: false,
-  statusError: false,
+  request: false,
+  error: false,
+};
+const initialStateOrderData: TOrderDataState = {
+  item: { entry: null, request: false, error: false },
+  items: [],
+  total: 0,
+  totalToday: 0,
+  success: false,
+  error: false,
 };
 
 export const menuReducer = (
@@ -170,7 +195,7 @@ export const orderReducer = (
     case GET_ORDER_STATUS_REQUEST: {
       return {
         ...state,
-        statusRequest: true,
+        request: true,
       };
     }
 
@@ -180,15 +205,15 @@ export const orderReducer = (
         status: { ...action.payload },
         total: { ...initialStateOrder.total },
         items: { ...initialStateOrder.items },
-        statusRequest: false,
-        statusError: false,
+        request: false,
+        error: false,
       };
     }
 
     case GET_ORDER_STATUS_ERROR: {
       return {
         ...state,
-        statusError: true,
+        error: true,
       };
     }
 
@@ -260,6 +285,88 @@ export const orderReducer = (
             },
           }
         : state;
+    }
+
+    default:
+      return state;
+  }
+};
+
+export const orderDataReducer = (
+  state = initialStateOrderData,
+  action: TOrderDataActions
+): TOrderDataState => {
+  switch (action.type) {
+    case SUCCESS_ORDER_FEED:
+    case SUCCESS_ORDER_USER: {
+      return {
+        ...state,
+        items: [...initialStateOrderData.items],
+        total: initialStateOrderData.total,
+        totalToday: initialStateOrderData.totalToday,
+        success: true,
+        error: initialStateOrderData.error,
+      };
+    }
+
+    case ERROR_ORDER_FEED:
+    case ERROR_ORDER_USER: {
+      console.error(action.payload.message);
+
+      return {
+        ...state,
+        error: true,
+      };
+    }
+
+    case CLOSED_ORDER_FEED:
+    case CLOSED_ORDER_USER: {
+      return {
+        ...initialStateOrderData,
+      };
+    }
+
+    case MESSAGE_ORDER_FEED:
+    case MESSAGE_ORDER_USER: {
+      return {
+        ...state,
+        items: action.payload.orders,
+        total: action.payload.total,
+        totalToday: action.payload.totalToday,
+        error: initialStateOrderData.error,
+      };
+    }
+
+    case GET_ORDER_ENTRY_REQUEST: {
+      return {
+        ...state,
+        item: {
+          ...state.item,
+          request: true,
+        },
+      };
+    }
+
+    case GET_ORDER_ENTRY_SUCCESS: {
+      return {
+        ...state,
+        item: {
+          ...state.item,
+          entry: action.payload,
+          request: initialStateOrderData.item.request,
+          error: initialStateOrderData.item.error,
+        },
+      };
+    }
+
+    case GET_ORDER_ENTRY_ERROR: {
+      return {
+        ...state,
+        item: {
+          ...state.item,
+          error: true,
+        },
+      };
     }
 
     default:

@@ -1,4 +1,4 @@
-import { BASE_URL } from "../../constants";
+import { BASE_URL_HTTP } from "../../constants";
 import {
   TDnDItem,
   TMenuItems,
@@ -7,10 +7,12 @@ import {
   TOrderItem,
   TOrderItems,
   TOrderStatus,
+  TOrderEntry,
   TDispatch,
   TThunk,
   checkResponse,
   getCookie,
+  TOrderData,
 } from "../../utils";
 
 export const GET_MENU_ITEMS_REQUEST: "GET_MENU_ITEMS_REQUEST" =
@@ -37,6 +39,26 @@ export const RESET_ORDER_STATUS: "RESET_ORDER_STATUS" = "RESET_ORDER_STATUS";
 export const REORDER_ORDER_ITEMS: "REORDER_ORDER_ITEMS" = "REORDER_ORDER_ITEMS";
 export const ADD_ORDER_ITEM: "ADD_ORDER_ITEM" = "ADD_ORDER_ITEM";
 export const REMOVE_ORDER_ITEM: "REMOVE_ORDER_ITEM" = "REMOVE_ORDER_ITEM";
+export const START_ORDER_FEED = "START_ORDER_FEED";
+export const OPEN_ORDER_FEED = "OPEN_ORDER_FEED";
+export const SUCCESS_ORDER_FEED = "SUCCESS_ORDER_FEED";
+export const CLOSED_ORDER_FEED = "CLOSED_ORDER_FEED";
+export const DISCONNECT_ORDER_FEED = "DISCONNECT_ORDER_FEED";
+export const ERROR_ORDER_FEED = "ERROR_ORDER_FEED";
+export const MESSAGE_ORDER_FEED = "MESSAGE_ORDER_FEED";
+export const START_ORDER_USER = "START_ORDER_USER";
+export const OPEN_ORDER_USER = "OPEN_ORDER_USER";
+export const SUCCESS_ORDER_USER = "SUCCESS_ORDER_USER";
+export const CLOSED_ORDER_USER = "CLOSED_ORDER_USER";
+export const DISCONNECT_ORDER_USER = "DISCONNECT_ORDER_USER";
+export const ERROR_ORDER_USER = "ERROR_ORDER_USER";
+export const MESSAGE_ORDER_USER = "MESSAGE_ORDER_USER";
+export const GET_ORDER_ENTRY_REQUEST: "GET_ORDER_ENTRY_REQUEST" =
+  "GET_ORDER_ENTRY_REQUEST";
+export const GET_ORDER_ENTRY_SUCCESS: "GET_ORDER_ENTRY_SUCCESS" =
+  "GET_ORDER_ENTRY_SUCCESS";
+export const GET_ORDER_ENTRY_ERROR: "GET_ORDER_ENTRY_ERROR" =
+  "GET_ORDER_ENTRY_ERROR";
 
 export interface IGetMenuItemsRequestAction {
   readonly type: typeof GET_MENU_ITEMS_REQUEST;
@@ -109,6 +131,83 @@ export interface IRemoveOrderItemAction {
   readonly payload: TDnDItem;
 }
 
+export interface IStartOrderFeedAction {
+  readonly type: typeof START_ORDER_FEED;
+  readonly payload: string;
+}
+
+export interface IOpenOrderFeedAction {
+  readonly type: typeof OPEN_ORDER_FEED;
+}
+
+export interface ISuccessOrderFeedAction {
+  readonly type: typeof SUCCESS_ORDER_FEED;
+}
+
+export interface IClosedOrderFeedAction {
+  readonly type: typeof CLOSED_ORDER_FEED;
+}
+
+export interface IDisconnectOrderFeedAction {
+  readonly type: typeof DISCONNECT_ORDER_FEED;
+}
+
+export interface IErrorOrderFeedAction {
+  readonly type: typeof ERROR_ORDER_FEED;
+  readonly payload: Error;
+}
+
+export interface IMeaasegOrderFeedAction {
+  readonly type: typeof MESSAGE_ORDER_FEED;
+  readonly payload: TOrderData;
+}
+
+export interface IStartOrderUserAction {
+  readonly type: typeof START_ORDER_USER;
+  readonly payload: string;
+  readonly auth: boolean;
+}
+
+export interface IOpenOrderUserAction {
+  readonly type: typeof OPEN_ORDER_USER;
+}
+
+export interface ISuccessOrderUserAction {
+  readonly type: typeof SUCCESS_ORDER_USER;
+}
+
+export interface IClosedOrderUserAction {
+  readonly type: typeof CLOSED_ORDER_USER;
+}
+
+export interface IDisconnectOrderUserAction {
+  readonly type: typeof DISCONNECT_ORDER_USER;
+}
+
+export interface IErrorOrderUserAction {
+  readonly type: typeof ERROR_ORDER_USER;
+  readonly payload: Error;
+}
+
+export interface IMeaasegOrderUserAction {
+  readonly type: typeof MESSAGE_ORDER_USER;
+  readonly payload: TOrderData;
+}
+
+export interface IGetOrderEntryRequestAction {
+  readonly type: typeof GET_ORDER_ENTRY_REQUEST;
+}
+
+export interface IGetOrderEntrySuccessAction {
+  readonly type: typeof GET_ORDER_ENTRY_SUCCESS;
+  readonly payload: TOrderEntry;
+}
+
+export interface IGetOrderEntryErrorAction {
+  readonly type: typeof GET_ORDER_ENTRY_ERROR;
+  readonly payload: Error;
+}
+
 export type TMenuActions =
   | IGetMenuItemsRequestAction
   | IGetMenuItemsSuccessAction
@@ -128,6 +227,51 @@ export type TOrderActions =
   | IAddOrderItemAction
   | IRemoveOrderItemAction;
 
+export type TOrderFeedActions =
+  | IStartOrderFeedAction
+  | IOpenOrderFeedAction
+  | ISuccessOrderFeedAction
+  | IClosedOrderFeedAction
+  | IDisconnectOrderFeedAction
+  | IErrorOrderFeedAction
+  | IMeaasegOrderFeedAction;
+
+export type TOrderUserActions =
+  | IStartOrderUserAction
+  | IOpenOrderUserAction
+  | ISuccessOrderUserAction
+  | IClosedOrderUserAction
+  | IDisconnectOrderUserAction
+  | IErrorOrderUserAction
+  | IMeaasegOrderUserAction;
+
+export type TOrderDataActions =
+  | TOrderFeedActions
+  | TOrderUserActions
+  | IGetOrderEntryRequestAction
+  | IGetOrderEntrySuccessAction
+  | IGetOrderEntryErrorAction;
+
+export type TwsOrderFeedActions = {
+  onStart: typeof START_ORDER_FEED;
+  onOpen: typeof OPEN_ORDER_FEED;
+  onSuccess: typeof SUCCESS_ORDER_FEED;
+  onClosed: typeof CLOSED_ORDER_FEED;
+  onDisconnect: typeof DISCONNECT_ORDER_FEED;
+  onError: typeof ERROR_ORDER_FEED;
+  onMessage: typeof MESSAGE_ORDER_FEED;
+};
+
+export type TwsOrderUserActions = {
+  onStart: typeof START_ORDER_USER;
+  onOpen: typeof OPEN_ORDER_USER;
+  onSuccess: typeof SUCCESS_ORDER_USER;
+  onClosed: typeof CLOSED_ORDER_USER;
+  onDisconnect: typeof DISCONNECT_ORDER_USER;
+  onError: typeof ERROR_ORDER_USER;
+  onMessage: typeof MESSAGE_ORDER_USER;
+};
+
 export function getMenuItems(): TThunk {
   return async function (dispatch: TDispatch) {
     let result = false;
@@ -137,7 +281,7 @@ export function getMenuItems(): TThunk {
         type: GET_MENU_ITEMS_REQUEST,
       });
 
-      const response = await fetch(`${BASE_URL}/ingredients`, {
+      const response = await fetch(`${BASE_URL_HTTP}/ingredients`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       });
@@ -222,7 +366,7 @@ export function getOrderStatus(items: TOrderItems): TThunk {
 
       dispatch({ type: GET_ORDER_STATUS_REQUEST });
 
-      const response = await fetch(`${BASE_URL}/orders`, {
+      const response = await fetch(`${BASE_URL_HTTP}/orders`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -277,3 +421,71 @@ export function getOrderStatus(items: TOrderItems): TThunk {
     return result;
   };
 }
+
+export function getOrderEntry(number: string | undefined): TThunk {
+  return async function (dispatch: TDispatch) {
+    let result = false;
+
+    try {
+      dispatch({ type: GET_ORDER_ENTRY_REQUEST });
+
+      const response = await fetch(`${BASE_URL_HTTP}/orders/${number}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const content = await response.json();
+
+      try {
+        checkResponse(response);
+      } catch (error: any) {
+        if (content.message) {
+          throw new Error(
+            `Failed to get the order entry: ${content.message}. ${error.message}`
+          );
+        } else {
+          throw error;
+        }
+      }
+
+      if (content.success) {
+        dispatch({
+          type: GET_ORDER_ENTRY_SUCCESS,
+          payload: content.orders.length > 0 ? { ...content.orders[0] } : null,
+        });
+
+        result = true;
+      } else {
+        throw new Error("Failed to get the order entry: empty data");
+      }
+    } catch (error: any) {
+      dispatch({
+        type: GET_ORDER_ENTRY_ERROR,
+        payload: error,
+      });
+    }
+
+    return result;
+  };
+}
+
+export const wsOrderFeedActions: TwsOrderFeedActions = {
+  onStart: START_ORDER_FEED,
+  onOpen: OPEN_ORDER_FEED,
+  onSuccess: SUCCESS_ORDER_FEED,
+  onClosed: CLOSED_ORDER_FEED,
+  onDisconnect: DISCONNECT_ORDER_FEED,
+  onError: ERROR_ORDER_FEED,
+  onMessage: MESSAGE_ORDER_FEED,
+};
+
+export const wsOrderUserActions: TwsOrderUserActions = {
+  onStart: START_ORDER_USER,
+  onOpen: OPEN_ORDER_USER,
+  onSuccess: SUCCESS_ORDER_USER,
+  onClosed: CLOSED_ORDER_USER,
+  onDisconnect: DISCONNECT_ORDER_USER,
+  onError: ERROR_ORDER_USER,
+  onMessage: MESSAGE_ORDER_USER,
+};

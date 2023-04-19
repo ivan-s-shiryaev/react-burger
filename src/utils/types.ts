@@ -1,6 +1,11 @@
 import { TAuthActions } from "../services/actions/auth";
-import { TMenuActions } from "../services/actions/order";
-import { TOrderActions } from "../services/actions/order";
+import {
+  TMenuActions,
+  TOrderActions,
+  TOrderDataActions,
+  TwsOrderFeedActions,
+  TwsOrderUserActions,
+} from "../services/actions/order";
 import { TModalActions } from "../services/actions/modal";
 import { ThunkDispatch, ThunkAction } from "redux-thunk";
 import store from "../services/store";
@@ -19,6 +24,7 @@ export type TIngredient = {
   price: number;
   image: string;
   image_large: string;
+  image_mobile: string;
   count: number;
 };
 export type TAuthTokenValue = string | undefined;
@@ -97,8 +103,31 @@ export type TOrderState = {
   total: TOrderTotal;
   items: TOrderItems;
   status: TOrderStatus;
-  statusRequest: boolean;
-  statusError: boolean;
+  request: boolean;
+  error: boolean;
+};
+export type TOrderEntry = {
+  _id: string;
+  number: number;
+  name: string;
+  status: string;
+  ingredients: Array<string>;
+  createdAt: string;
+  updatedAt: string;
+};
+export type TOrderDataItems = Array<TOrderEntry>;
+export type TOrderData = {
+  orders: TOrderDataItems;
+  total: number;
+  totalToday: number;
+};
+export type TOrderDataState = {
+  item: { entry: TOrderEntry | null; request: boolean; error: boolean };
+  items: TOrderDataItems;
+  total: number;
+  totalToday: number;
+  success: boolean;
+  error: boolean;
 };
 export type TMenuItem = TIngredient | null;
 export type TMenuItems = Array<TIngredient>;
@@ -122,7 +151,9 @@ export type TApplicationActions =
   | TAuthActions
   | TMenuActions
   | TOrderActions
+  | TOrderDataActions
   | TModalActions;
+export type TwsActions = TwsOrderFeedActions | TwsOrderUserActions;
 export type RootState = ReturnType<typeof store.getState>;
 export type TDispatch = ThunkDispatch<RootState, unknown, TApplicationActions>;
 export type TThunk = ThunkAction<
@@ -131,5 +162,3 @@ export type TThunk = ThunkAction<
   unknown,
   TApplicationActions
 >;
-// export type TDispatch = ThunkDispatch<RootState, unknown, TApplicationActions>;
-// export type TThunk = ThunkDispatch<RootState, unknown, TApplicationActions>;

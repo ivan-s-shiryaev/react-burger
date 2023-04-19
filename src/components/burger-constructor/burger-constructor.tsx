@@ -33,7 +33,7 @@ const BurgerConstructor: FC<PWithModal> = (props) => {
       total,
       items: { locked, unlocked },
       status,
-      statusRequest: request,
+      request,
     },
     auth: {
       user: { data: user },

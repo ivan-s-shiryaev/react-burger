@@ -1,0 +1,19 @@
+main.wrapper {
+  width: 1240px;
+}
+article.container,
+aside.container {
+  height: auto;
+}
+article.container {
+  display: flex;
+  flex-direction: column;
+  width: 600px;
+  margin: 0 0 40px;
+}
+aside.container {
+  display: flex;
+  flex-direction: column;
+  width: 580px;
+  margin: 100px 0 40px 60px;
+}

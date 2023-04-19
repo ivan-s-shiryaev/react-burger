@@ -28,6 +28,21 @@ export const checkResponse = (argument: Response): boolean => {
   return result;
 };
 
+export const getEventError = (argument: Event): Error => {
+  if (argument instanceof ErrorEvent) {
+    return new Error(argument.message);
+  } else if (argument instanceof CloseEvent) {
+    return new Error(`WS Error (${argument.code}): ${argument.reason}`);
+  }
+
+  return new Error(
+    `Error (${argument.type}): ${JSON.stringify(
+      argument,
+      Object.getOwnPropertyNames(argument)
+    )}`
+  );
+};
+
 export function getCookie(name: string): string | undefined {
   const matches = document.cookie.match(
     new RegExp(

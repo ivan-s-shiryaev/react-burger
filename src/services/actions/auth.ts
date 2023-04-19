@@ -1,4 +1,4 @@
-import { BASE_URL } from "../../constants";
+import { BASE_URL_HTTP } from "../../constants";
 import {
   TAuthTokenValue,
   TAuthToken,
@@ -211,17 +211,19 @@ export type TAuthActions =
   | IReadAuthResetSuccessAction
   | ISetAuthResetDataAction;
 
-async function refreshAuthToken(argument: TAuthToken) {
+export async function refreshAuthToken() {
   let result = false;
 
+  const token = getCookie("refresh");
+
   try {
-    const response = await fetch(`${BASE_URL}/auth/token`, {
+    const response = await fetch(`${BASE_URL_HTTP}/auth/token`, {
       method: "POST",
       mode: "cors",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(argument),
+      body: JSON.stringify({ token }),
     });
     const content = await response.json();
 
@@ -261,7 +263,7 @@ export function readAuthUser({ token }: TAuthToken, refresh = true): TThunk {
         type: READ_AUTH_USER_REQUEST,
       });
 
-      const response = await fetch(`${BASE_URL}/auth/user`, {
+      const response = await fetch(`${BASE_URL_HTTP}/auth/user`, {
         method: "GET",
         mode: "cors",
         headers: {
@@ -276,7 +278,7 @@ export function readAuthUser({ token }: TAuthToken, refresh = true): TThunk {
       } catch (error: any) {
         if (content.message) {
           if (refresh && content.message === "jwt expired") {
-            await refreshAuthToken({ token: getCookie("refresh") });
+            await refreshAuthToken();
             await dispatch(readAuthUser({ token: getCookie("access") }, false));
           } else {
             throw new Error(
@@ -328,7 +330,7 @@ export function updateAuthUser({
         type: UPDATE_AUTH_USER_REQUEST,
       });
 
-      const response = await fetch(`${BASE_URL}/auth/user`, {
+      const response = await fetch(`${BASE_URL_HTTP}/auth/user`, {
         method: "PATCH",
         mode: "cors",
         headers: {
@@ -385,7 +387,7 @@ export function readAuthRegister(argument: TAuthRegisterData): TThunk {
         type: READ_AUTH_REGISTER_REQUEST,
       });
 
-      const response = await fetch(`${BASE_URL}/auth/register`, {
+      const response = await fetch(`${BASE_URL_HTTP}/auth/register`, {
         method: "POST",
         mode: "cors",
         headers: {
@@ -448,7 +450,7 @@ export function readAuthLogin(argument: TAuthLoginData): TThunk {
         type: READ_AUTH_LOGIN_REQUEST,
       });
 
-      const response = await fetch(`${BASE_URL}/auth/login`, {
+      const response = await fetch(`${BASE_URL_HTTP}/auth/login`, {
         method: "POST",
         mode: "cors",
         headers: {
@@ -513,7 +515,7 @@ export function readAuthLogout(argument: TAuthToken): TThunk {
         type: READ_AUTH_LOGOUT_REQUEST,
       });
 
-      const response = await fetch(`${BASE_URL}/auth/logout`, {
+      const response = await fetch(`${BASE_URL_HTTP}/auth/logout`, {
         method: "POST",
         mode: "cors",
         headers: {
@@ -572,7 +574,7 @@ export function readAuthForgot(argument: TAuthForgotData): TThunk {
         type: READ_AUTH_FORGOT_REQUEST,
       });
 
-      const response = await fetch(`${BASE_URL}/password-reset`, {
+      const response = await fetch(`${BASE_URL_HTTP}/password-reset`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(argument),
@@ -620,7 +622,7 @@ export function readAuthReset(argument: TAuthResetData): TThunk {
         type: READ_AUTH_RESET_REQUEST,
       });
 
-      const response = await fetch(`${BASE_URL}/password-reset/reset`, {
+      const response = await fetch(`${BASE_URL_HTTP}/password-reset/reset`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(argument),

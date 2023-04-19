@@ -18,36 +18,38 @@ const AppHeader: FC = () => {
   }, []);
 
   return (
-    <header className="pt-4 pb-4">
-      <nav className={styles.menu}>
-        <ul>
-          <li>
-            <NavLink to="/" className={isNavLinkActive}>
-              <BurgerIcon type="secondary" />
-              <span>Конструктор</span>
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/comingsoon" className={isNavLinkActive}>
-              <ListIcon type="secondary" />
-              <span>Лента заказов</span>
-            </NavLink>
-          </li>
-        </ul>
-      </nav>
-      <nav className={styles.menu}>
-        <ul>
-          <li>
-            <NavLink to="/profile" className={isNavLinkActive}>
-              <ProfileIcon type="secondary" />
-              <span>Личный кабинет</span>
-            </NavLink>
-          </li>
-        </ul>
-      </nav>
-      <Link to="/">
-        <Logo />
-      </Link>
+    <header className="">
+      <div className="pt-4 pb-4">
+        <nav className={styles.menu}>
+          <ul>
+            <li>
+              <NavLink to="/" className={isNavLinkActive}>
+                <BurgerIcon type="secondary" />
+                <span>Конструктор</span>
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/feed" className={isNavLinkActive}>
+                <ListIcon type="secondary" />
+                <span>Лента заказов</span>
+              </NavLink>
+            </li>
+          </ul>
+        </nav>
+        <nav className={styles.menu}>
+          <ul>
+            <li>
+              <NavLink to="/profile" className={isNavLinkActive}>
+                <ProfileIcon type="secondary" />
+                <span>Личный кабинет</span>
+              </NavLink>
+            </li>
+          </ul>
+        </nav>
+        <Link to="/">
+          <Logo />
+        </Link>
+      </div>
     </header>
   );
 };
