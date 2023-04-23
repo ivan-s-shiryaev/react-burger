@@ -46,6 +46,7 @@ const App: FC = () => {
       <AppHeader />
       <Routes location={background ?? location}>
         <Route path="/" element={<HomePage />} />
+        <Route path="/react-burger" element={<HomePage />} />
         <Route path="/feed" element={<FeedPage />} />
         <Route path="/feed/:id" element={<OrderPage />} />
         <Route
