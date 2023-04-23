@@ -29,7 +29,7 @@ import {
 } from "../actions/auth";
 import { TAuth } from "../../utils";
 
-const initialState: TAuth = {
+export const initialState: TAuth = {
   user: {
     data: {
       email: "",
@@ -76,7 +76,7 @@ const initialState: TAuth = {
   },
 };
 
-const reducer = (state = initialState, action: TAuthActions) => {
+export const authReducer = (state = initialState, action: TAuthActions) => {
   switch (action.type) {
     case READ_AUTH_USER_REQUEST:
     case UPDATE_AUTH_USER_REQUEST: {
@@ -370,5 +370,3 @@ const reducer = (state = initialState, action: TAuthActions) => {
       return state;
   }
 };
-
-export default reducer;

@@ -36,7 +36,7 @@ import {
   TOrderDataState,
 } from "../../utils";
 
-const initialStateMenu: TMenuState = {
+export const initialStateMenu: TMenuState = {
   item: null,
   items: [],
   itemsRequest: false,
@@ -44,7 +44,7 @@ const initialStateMenu: TMenuState = {
   category: "",
   categories: new Set(),
 };
-const initialStateOrder: TOrderState = {
+export const initialStateOrder: TOrderState = {
   total: {
     locked: 0,
     unlocked: 0,
@@ -60,7 +60,7 @@ const initialStateOrder: TOrderState = {
   request: false,
   error: false,
 };
-const initialStateOrderData: TOrderDataState = {
+export const initialStateOrderData: TOrderDataState = {
   item: { entry: null, request: false, error: false },
   items: [],
   total: 0,
