@@ -5,16 +5,24 @@ import {
   ChangeEvent,
   Fragment,
 } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
+import { useDispatch, useSelector } from "../../hooks/redux";
 import {
   EmailInput,
   PasswordInput,
   Button,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 
-import { TAuth, TAuthLogin, validateEmail, validatePassword } from "../utils";
-import { SET_AUTH_LOGIN_DATA, readAuthLogin } from "../services/actions/auth";
+import {
+  TAuth,
+  TAuthLogin,
+  validateEmail,
+  validatePassword,
+} from "../../utils";
+import {
+  SET_AUTH_LOGIN_DATA,
+  readAuthLogin,
+} from "../../services/actions/auth";
 import styles from "./login.module.css";
 
 type TState = {
@@ -41,7 +49,7 @@ export function LoginPage() {
         validatePassword(password)
       ) {
         (async () => {
-          if (await dispatch(readAuthLogin({ email, password }) as any)) {
+          if (await dispatch(readAuthLogin({ email, password }))) {
             navigate("/", { replace: true });
           }
         })();
@@ -55,11 +63,13 @@ export function LoginPage() {
       dispatch({
         type: SET_AUTH_LOGIN_DATA,
         payload: {
-          [event.target.name]: event.target.value,
+          email: event.target.name === "email" ? event.target.value : email,
+          password:
+            event.target.name === "password" ? event.target.value : password,
         },
       });
     },
-    [dispatch]
+    [dispatch, email, password]
   );
 
   return (

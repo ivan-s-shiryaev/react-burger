@@ -1,5 +1,5 @@
 import { ComponentType } from "react";
-import { useSelector } from "react-redux";
+import { useSelector } from "../../hooks/redux";
 
 import { PWithModal } from "../../utils";
 

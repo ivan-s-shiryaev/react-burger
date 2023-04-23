@@ -1,12 +1,12 @@
 import { forwardRef, useMemo, Fragment } from "react";
-import { useSelector } from "react-redux";
+import { useSelector } from "../../hooks/redux";
 
-import { TMenu, getMenuCategoryTitle } from "../../utils";
+import { TMenuState, getMenuCategoryTitle } from "../../utils";
 import BurgerIngredient from "../burger-ingredient/burger-ingredient";
 import ingredientsCategoryStyles from "./ingredients-category.module.css";
 
 type TState = {
-  menu: TMenu;
+  menu: TMenuState;
 };
 type TProps = {
   id: string;

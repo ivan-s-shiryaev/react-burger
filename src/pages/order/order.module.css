@@ -1,0 +1,16 @@
+main.wrapper {
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 1240px;
+  height: auto;
+  margin: 210px auto 0;
+}
+main.wrapper .header {
+  justify-content: center;
+}

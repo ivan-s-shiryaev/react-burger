@@ -1,64 +1,70 @@
 header {
-    position: relative;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    box-sizing: content-box;
-    width: 1280px;
-    margin: 40px auto 0;
+  margin: 40px 40px 0;
+  min-width: 1320px;
+  background: #1c1c1c;
 }
 
-header > a {
-    position: absolute;
-    display: block;
-    left: 50%;
-    top: 50%;
-    width: 290px;
-    height: 50px;
-    margin: -25px 0 0 -145px;
-    overflow: hidden;
+header > div {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: content-box;
+  width: 1280px;
+  margin: 0 auto 0;
 }
 
-header > nav.menu > ul {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin: 0;
-    padding: 0;
-    list-style-type: none;
+header > div > a {
+  position: absolute;
+  display: block;
+  left: 50%;
+  top: 50%;
+  width: 290px;
+  height: 50px;
+  margin: -25px 0 0 -145px;
+  overflow: hidden;
 }
 
-header > nav.menu > ul > li {
-    height: 56px;
-    margin: 0 8px 0 0;
-    padding: 0;
-    border-radius: 40px;
+header > div > nav.menu > ul {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
 }
 
-header > nav.menu > ul > li:last-child {
-    margin-right: 0;
+header > div > nav.menu > ul > li {
+  height: 56px;
+  margin: 0 8px 0 0;
+  padding: 0;
+  border-radius: 40px;
 }
 
-header > nav.menu > ul > li > a {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    padding: 0 20px;
-    text-decoration: none;
-    white-space: nowrap;
-    overflow: hidden;
+header > div > nav.menu > ul > li:last-child {
+  margin-right: 0;
 }
 
-header > nav.menu > ul > li > a.text_color_active {
-    color: var(--text-primary-color);
-}
-header > nav.menu > ul > li > a.text_color_active > svg {
-    fill: var(--text-primary-color);
+header > div > nav.menu > ul > li > a {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 0 20px;
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
-header > nav.menu > ul > li > a > span {
-    margin: 0 0 0 8px;
+header > div > nav.menu > ul > li > a.text_color_active {
+  color: var(--text-primary-color);
+}
+header > div > nav.menu > ul > li > a.text_color_active > svg {
+  fill: var(--text-primary-color);
+}
+
+header > div > nav.menu > ul > li > a > span {
+  margin: 0 0 0 8px;
 }

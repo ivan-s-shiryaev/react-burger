@@ -1,73 +1,68 @@
 import {
   useCallback,
-  useEffect,
   Fragment,
   FormEventHandler,
   FormEvent,
   ChangeEvent,
 } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useLocation, Navigate, Link } from "react-router-dom";
 import {
-  Input,
-  PasswordInput,
+  EmailInput,
   Button,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 
-import { TAuth, TAuthUser, TAuthReset, validatePassword } from "../utils";
-import { SET_AUTH_RESET_DATA, readAuthReset } from "../services/actions/auth";
-import styles from "./reset-password.module.css";
+import { useDispatch, useSelector } from "../../hooks/redux";
+import { TAuth, TAuthUser, TAuthForgot, validateEmail } from "../../utils";
+import {
+  SET_AUTH_FORGOT_DATA,
+  readAuthForgot,
+} from "../../services/actions/auth";
+import styles from "./forgot-password.module.css";
 
 type TState = {
   auth: TAuth;
 };
 
-export function ResetPasswordPage() {
+export function ForgotPasswordPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
 
   const {
-    data: { password, token },
+    data: { email },
     request,
-  } = useSelector((state: TState): TAuthReset => state.auth.reset);
+  } = useSelector((state: TState): TAuthForgot => state.auth.forgot);
   const { data: user } = useSelector(
     (state: TState): TAuthUser => state.auth.user
   );
-
-  useEffect(() => {
-    if (!location.state?.forgot) {
-      navigate("/forgot-password", { replace: true });
-    }
-  }, [navigate, location.state]);
 
   const onFormSubmit = useCallback<FormEventHandler>(
     (event: FormEvent) => {
       event.preventDefault();
 
-      if (password && validatePassword(password)) {
+      if (email && validateEmail(email)) {
         (async () => {
-          if (await dispatch(readAuthReset({ password, token }) as any)) {
-            navigate("/login", { replace: true });
-          } else {
-            navigate("/forgot-password", { replace: true });
+          if (await dispatch(readAuthForgot({ email }))) {
+            navigate("/reset-password", {
+              state: { ...location.state, forgot: true },
+            });
           }
         })();
       }
     },
-    [dispatch, navigate, password, token]
+    [dispatch, navigate, email, location.state]
   );
 
   const onInputChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
       dispatch({
-        type: SET_AUTH_RESET_DATA,
+        type: SET_AUTH_FORGOT_DATA,
         payload: {
-          [event.target.name]: event.target.value,
+          email: event.target.name === "email" ? event.target.value : email,
         },
       });
     },
-    [dispatch]
+    [dispatch, email]
   );
 
   return user?.email ? (
@@ -80,21 +75,13 @@ export function ResetPasswordPage() {
             <h1 className="text text_type_main-medium">
               Восстановление пароля
             </h1>
-            <PasswordInput
-              name={"password"}
-              value={password}
+            <EmailInput
+              name={"email"}
+              value={email}
               onChange={onInputChange}
               disabled={request}
-              placeholder={"Введите новый пароль"}
-              extraClass="mt-6"
-            />
-            <Input
-              type="text"
-              name={"token"}
-              value={token}
-              onChange={onInputChange}
-              disabled={request}
-              placeholder={"Введите код из письма"}
+              placeholder={"Укажите e-mail"}
+              isIcon={false}
               extraClass="mt-6"
             />
             <Button
@@ -104,7 +91,7 @@ export function ResetPasswordPage() {
               size="medium"
               extraClass="mt-6"
             >
-              Сохранить
+              Восстановить
             </Button>
             <p className="text text_type_main-default text_color_inactive mt-20">
               Вспомнили пароль? <Link to="/login">Войти</Link>

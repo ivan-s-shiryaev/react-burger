@@ -14,11 +14,29 @@ import {
   REORDER_ORDER_ITEMS,
   ADD_ORDER_ITEM,
   REMOVE_ORDER_ITEM,
-  SHOW_MODAL,
-  HIDE_MODAL,
+  TMenuActions,
+  TOrderActions,
+  SUCCESS_ORDER_FEED,
+  ERROR_ORDER_FEED,
+  CLOSED_ORDER_FEED,
+  MESSAGE_ORDER_FEED,
+  TOrderDataActions,
+  SUCCESS_ORDER_USER,
+  ERROR_ORDER_USER,
+  CLOSED_ORDER_USER,
+  MESSAGE_ORDER_USER,
+  GET_ORDER_ENTRY_REQUEST,
+  GET_ORDER_ENTRY_SUCCESS,
+  GET_ORDER_ENTRY_ERROR,
 } from "../actions/order";
+import {
+  TMenuItems,
+  TMenuState,
+  TOrderState,
+  TOrderDataState,
+} from "../../utils";
 
-const initialStateMenu = {
+const initialStateMenu: TMenuState = {
   item: null,
   items: [],
   itemsRequest: false,
@@ -26,7 +44,7 @@ const initialStateMenu = {
   category: "",
   categories: new Set(),
 };
-const initialStateOrder = {
+const initialStateOrder: TOrderState = {
   total: {
     locked: 0,
     unlocked: 0,
@@ -36,14 +54,25 @@ const initialStateOrder = {
     unlocked: [],
   },
   status: {
-    number: null,
+    number: 0,
     name: null,
   },
-  statusRequest: false,
-  statusError: false,
+  request: false,
+  error: false,
+};
+const initialStateOrderData: TOrderDataState = {
+  item: { entry: null, request: false, error: false },
+  items: [],
+  total: 0,
+  totalToday: 0,
+  success: false,
+  error: false,
 };
 
-export const menuReducer = (state = initialStateMenu, action) => {
+export const menuReducer = (
+  state = initialStateMenu,
+  action: TMenuActions
+): TMenuState => {
   switch (action.type) {
     case GET_MENU_ITEMS_REQUEST: {
       return {
@@ -61,7 +90,7 @@ export const menuReducer = (state = initialStateMenu, action) => {
         category: action.payload[0].type,
         categories: action.payload.reduce(
           (accumulator, { type }) => accumulator.add(type),
-          new Set()
+          new Set<string>()
         ),
       };
     }
@@ -91,7 +120,7 @@ export const menuReducer = (state = initialStateMenu, action) => {
 
     case SET_MENU_CATEGORY: {
       const categories = state.categories;
-      const category = [...categories].find(
+      const category = Array.from(categories).find(
         (value) => value === action.payload
       );
 
@@ -106,7 +135,7 @@ export const menuReducer = (state = initialStateMenu, action) => {
       const items =
         item === undefined
           ? state.items
-          : state.items.reduce((accumulator, value) => {
+          : state.items.reduce((accumulator: TMenuItems, value) => {
               accumulator.push({
                 ...value,
                 count:
@@ -133,7 +162,7 @@ export const menuReducer = (state = initialStateMenu, action) => {
       const items =
         item === undefined
           ? state.items
-          : state.items.reduce((accumulator, value) => {
+          : state.items.reduce((accumulator: TMenuItems, value) => {
               accumulator.push({
                 ...value,
                 count:
@@ -158,12 +187,15 @@ export const menuReducer = (state = initialStateMenu, action) => {
   }
 };
 
-export const orderReducer = (state = initialStateOrder, action) => {
+export const orderReducer = (
+  state = initialStateOrder,
+  action: TOrderActions
+): TOrderState => {
   switch (action.type) {
     case GET_ORDER_STATUS_REQUEST: {
       return {
         ...state,
-        statusRequest: true,
+        request: true,
       };
     }
 
@@ -173,15 +205,15 @@ export const orderReducer = (state = initialStateOrder, action) => {
         status: { ...action.payload },
         total: { ...initialStateOrder.total },
         items: { ...initialStateOrder.items },
-        statusRequest: false,
-        statusError: false,
+        request: false,
+        error: false,
       };
     }
 
     case GET_ORDER_STATUS_ERROR: {
       return {
         ...state,
-        statusError: true,
+        error: true,
       };
     }
 
@@ -260,14 +292,81 @@ export const orderReducer = (state = initialStateOrder, action) => {
   }
 };
 
-export const modalReducer = (state = "", action) => {
+export const orderDataReducer = (
+  state = initialStateOrderData,
+  action: TOrderDataActions
+): TOrderDataState => {
   switch (action.type) {
-    case SHOW_MODAL: {
-      return action.payload;
+    case SUCCESS_ORDER_FEED:
+    case SUCCESS_ORDER_USER: {
+      return {
+        ...state,
+        items: [...initialStateOrderData.items],
+        total: initialStateOrderData.total,
+        totalToday: initialStateOrderData.totalToday,
+        success: true,
+        error: initialStateOrderData.error,
+      };
     }
 
-    case HIDE_MODAL: {
-      return false;
+    case ERROR_ORDER_FEED:
+    case ERROR_ORDER_USER: {
+      console.error(action.payload.message);
+
+      return {
+        ...state,
+        error: true,
+      };
+    }
+
+    case CLOSED_ORDER_FEED:
+    case CLOSED_ORDER_USER: {
+      return {
+        ...initialStateOrderData,
+      };
+    }
+
+    case MESSAGE_ORDER_FEED:
+    case MESSAGE_ORDER_USER: {
+      return {
+        ...state,
+        items: action.payload.orders,
+        total: action.payload.total,
+        totalToday: action.payload.totalToday,
+        error: initialStateOrderData.error,
+      };
+    }
+
+    case GET_ORDER_ENTRY_REQUEST: {
+      return {
+        ...state,
+        item: {
+          ...state.item,
+          request: true,
+        },
+      };
+    }
+
+    case GET_ORDER_ENTRY_SUCCESS: {
+      return {
+        ...state,
+        item: {
+          ...state.item,
+          entry: action.payload,
+          request: initialStateOrderData.item.request,
+          error: initialStateOrderData.item.error,
+        },
+      };
+    }
+
+    case GET_ORDER_ENTRY_ERROR: {
+      return {
+        ...state,
+        item: {
+          ...state.item,
+          error: true,
+        },
+      };
     }
 
     default:

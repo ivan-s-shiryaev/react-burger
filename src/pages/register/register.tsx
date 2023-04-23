@@ -5,7 +5,7 @@ import {
   FormEvent,
   ChangeEvent,
 } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "../../hooks/redux";
 import { Navigate, Link } from "react-router-dom";
 import {
   Input,
@@ -21,11 +21,11 @@ import {
   validateName,
   validateEmail,
   validatePassword,
-} from "../utils";
+} from "../../utils";
 import {
   SET_AUTH_REGISTER_DATA,
   readAuthRegister,
-} from "../services/actions/auth";
+} from "../../services/actions/auth";
 import styles from "./register.module.css";
 
 type TState = {
@@ -56,7 +56,7 @@ export function RegisterPage() {
         validatePassword(password)
       ) {
         (async () => {
-          await dispatch(readAuthRegister({ email, name, password }) as any);
+          await dispatch(readAuthRegister({ email, name, password }));
         })();
       }
     },
@@ -68,11 +68,14 @@ export function RegisterPage() {
       dispatch({
         type: SET_AUTH_REGISTER_DATA,
         payload: {
-          [event.target.name]: event.target.value,
+          name: event.target.name === "name" ? event.target.value : name,
+          email: event.target.name === "email" ? event.target.value : email,
+          password:
+            event.target.name === "password" ? event.target.value : password,
         },
       });
     },
-    [dispatch]
+    [dispatch, name, email, password]
   );
 
   return user?.email ? (

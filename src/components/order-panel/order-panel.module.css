@@ -1,0 +1,19 @@
+.container {
+  padding: 0 8px 0 0;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  scrollbar-color: #8585ad #2f2f37;
+}
+
+.container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.container::-webkit-scrollbar-track {
+  background: #2f2f37;
+  margin-bottom: 52px;
+}
+
+.container::-webkit-scrollbar-thumb {
+  background: #8585ad;
+}

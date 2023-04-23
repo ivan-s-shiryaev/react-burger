@@ -1,15 +1,15 @@
 import { Fragment } from "react";
 
-import { TMenu } from "../../utils";
-import { useSelector } from "react-redux";
+import { TMenuState } from "../../utils";
+import { useSelector } from "../../hooks/redux";
 import ingredientDetailsStyles from "./ingredient-details.module.css";
 
 type TState = {
-  menu: TMenu;
+  menu: TMenuState;
 };
 
 const IngredientDetails = () => {
-  const { item } = useSelector((state: TState): TMenu => state.menu);
+  const { item } = useSelector((state: TState): TMenuState => state.menu);
 
   return item ? (
     <Fragment>
