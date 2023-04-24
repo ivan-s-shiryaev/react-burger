@@ -1,9 +1,9 @@
 # Stellar Burgers
 
-Сайт опубликован:
+Сайт учебного проекта опубликован:
 
 - GitHub Pages https://ivan-s-shiryaev.github.io/react-burger/
-- Yandex Cloud http://158.160.26.72/react-burger
+- Yandex Cloud https://ivan-s-shiryaev.nomoredomains.monster/react-burger/
 
 # Getting Started with Create React App
 
