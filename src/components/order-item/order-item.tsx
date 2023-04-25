@@ -1,4 +1,4 @@
-import { FC, useCallback, useRef, SyntheticEvent } from "react";
+import { FC, useCallback, useRef } from "react";
 import { useDispatch } from "../../hooks/redux";
 import { useDrag, useDrop } from "react-dnd";
 import {
@@ -80,10 +80,7 @@ const OrderItem: FC<TProps> = (props) => {
   });
 
   const handleOrderItemTrashClick = useCallback(
-    (item: TDnDItem) => (event: SyntheticEvent) => {
-      event.preventDefault();
-      event.stopPropagation();
-
+    (item: TDnDItem) => {
       dispatch(removeOrderItem(item));
     },
     [dispatch]

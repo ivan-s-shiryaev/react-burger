@@ -17,7 +17,7 @@ declare global {
 ReactDOM.createRoot(document.getElementById("root-app") as HTMLElement).render(
   <React.StrictMode>
     <Provider store={store}>
-      <BrowserRouter>
+      <BrowserRouter basename="/react-burger">
         <App />
       </BrowserRouter>
     </Provider>

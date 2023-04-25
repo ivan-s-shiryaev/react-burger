@@ -1,9 +1,12 @@
 import { SHOW_MODAL, HIDE_MODAL, TModalActions } from "../actions/modal";
 import { TModalState } from "../../utils";
 
-const initialState: TModalState = false;
+export const initialState: TModalState = false;
 
-const reducer = (state = initialState, action: TModalActions): TModalState => {
+export const modalReducer = (
+  state = initialState,
+  action: TModalActions
+): TModalState => {
   switch (action.type) {
     case SHOW_MODAL: {
       return action.payload;
@@ -17,5 +20,3 @@ const reducer = (state = initialState, action: TModalActions): TModalState => {
       return state;
   }
 };
-
-export default reducer;

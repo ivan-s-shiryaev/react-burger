@@ -8,7 +8,7 @@ import {
 } from "@ya.praktikum/react-developer-burger-ui-components";
 
 import { TIngredient } from "../../utils";
-import burgerIngredientStyles from "./burger-ingredient.module.css";
+import styles from "./burger-ingredient.module.css";
 
 const BurgerIngredient: FC<TIngredient> = (props) => {
   const location = useLocation();
@@ -33,11 +33,10 @@ const BurgerIngredient: FC<TIngredient> = (props) => {
   return (
     <li
       ref={dragRef}
-      className={`${burgerIngredientStyles.container} ${
-        isDragging ? burgerIngredientStyles.dragging : ""
-      }`}
+      className={`${styles.container} ${isDragging ? styles.dragging : ""}`}
     >
       <Link
+        className={`${styles.link}`}
         to={`/ingredients/${id}`}
         state={{
           background: {
