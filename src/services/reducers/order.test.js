@@ -50,11 +50,33 @@ const menuIngredients = [
     image_large: "https://code.s3.yandex.net/react/code/meat-03-large.png",
     __v: 0,
   },
+  {
+    _id: "643d69a5c3f7b9001cfa093c",
+    name: "Краторная булка N-200i",
+    type: "bun",
+    proteins: 80,
+    fat: 24,
+    carbohydrates: 53,
+    calories: 420,
+    price: 1255,
+    image: "https://code.s3.yandex.net/react/code/bun-02.png",
+    image_mobile: "https://code.s3.yandex.net/react/code/bun-02-mobile.png",
+    image_large: "https://code.s3.yandex.net/react/code/bun-02-large.png",
+    __v: 0,
+  },
 ];
 const orderItemsUnlocked = [
   {
     id: menuIngredients[0]._id,
+    // type: menuIngredients[0].type,
     uuid: "3e98bdaf-03de-4113-ada9-41174fbba95e",
+  },
+];
+const orderItemsLocked = [
+  {
+    id: menuIngredients[1]._id,
+    // type: menuIngredients[1].type,
+    uuid: "bafb9f73-23e9-4864-802a-25d3bcc00ea5",
   },
 ];
 const orderStatus = {
@@ -100,13 +122,13 @@ describe("Menu reducer", () => {
 
   it("Should handle GET_MENU_ITEMS_SUCCESS", () => {
     const item = { ...menuIngredients[0] };
-    const items = [...menuIngredients];
+    const items = [{ ...menuIngredients[0] }];
     const category = item.type;
     const categories = new Set([menuIngredients[0].type]);
     expect(
       menuReducer(initialStateMenu, {
         type: GET_MENU_ITEMS_SUCCESS,
-        payload: menuIngredients,
+        payload: [...items],
       })
     ).toEqual({
       ...initialStateMenu,
@@ -159,6 +181,18 @@ describe("Menu reducer", () => {
       item,
       items,
     });
+    expect(
+      menuReducer(
+        { ...initialStateMenu, items },
+        {
+          type: SET_MENU_ITEM,
+          payload: "",
+        }
+      )
+    ).toEqual({
+      ...initialStateMenu,
+      items,
+    });
   });
 
   it("Should handle SET_MENU_CATEGORY", () => {
@@ -179,11 +213,39 @@ describe("Menu reducer", () => {
       category,
       categories,
     });
+    expect(
+      menuReducer(
+        { ...initialStateMenu, categories },
+        {
+          type: SET_MENU_CATEGORY,
+          payload: "",
+        }
+      )
+    ).toEqual({
+      ...initialStateMenu,
+      categories,
+    });
   });
 
   it("Should handle INCREASE_MENU_ITEM_COUNT", () => {
-    const item = { ...menuIngredients[0] };
-    const items = [{ ...menuIngredients[0], count: 0 }];
+    let item = { ...menuIngredients[0] };
+    let items = [
+      { ...menuIngredients[0], count: 0 },
+      { ...menuIngredients[1], count: 0 },
+    ];
+
+    expect(
+      menuReducer(
+        { ...initialStateMenu, items },
+        {
+          type: INCREASE_MENU_ITEM_COUNT,
+          payload: { id: "" },
+        }
+      )
+    ).toEqual({
+      ...initialStateMenu,
+      items,
+    });
 
     expect(
       menuReducer(
@@ -195,13 +257,59 @@ describe("Menu reducer", () => {
       )
     ).toEqual({
       ...initialStateMenu,
-      items: [{ ...item, count: 1 }],
+      items: [{ ...item, count: 1 }, { ...items[1] }],
+    });
+
+    item = { ...menuIngredients[1] };
+
+    expect(
+      menuReducer(
+        { ...initialStateMenu, items },
+        {
+          type: INCREASE_MENU_ITEM_COUNT,
+          payload: { id: item._id },
+        }
+      )
+    ).toEqual({
+      ...initialStateMenu,
+      items: [{ ...items[0] }, { ...item, count: 2 }],
+    });
+
+    items.push({ _id: "", type: "bun", count: 0 });
+
+    expect(
+      menuReducer(
+        { ...initialStateMenu, items },
+        {
+          type: INCREASE_MENU_ITEM_COUNT,
+          payload: { id: item._id },
+        }
+      )
+    ).toEqual({
+      ...initialStateMenu,
+      items: [{ ...items[0] }, { ...item, count: 2 }, { ...items[2] }],
     });
   });
 
   it("Should handle DECREASE_MENU_ITEM_COUNT", () => {
-    const item = { ...menuIngredients[0] };
-    const items = [{ ...menuIngredients[0], count: 1 }];
+    let item = { ...menuIngredients[0] };
+    let items = [
+      { ...menuIngredients[0], count: 1 },
+      { ...menuIngredients[1], count: 2 },
+    ];
+
+    expect(
+      menuReducer(
+        { ...initialStateMenu, items },
+        {
+          type: DECREASE_MENU_ITEM_COUNT,
+          payload: { id: "" },
+        }
+      )
+    ).toEqual({
+      ...initialStateMenu,
+      items,
+    });
 
     expect(
       menuReducer(
@@ -213,7 +321,37 @@ describe("Menu reducer", () => {
       )
     ).toEqual({
       ...initialStateMenu,
-      items: [{ ...item, count: 0 }],
+      items: [{ ...item, count: 0 }, { ...items[1] }],
+    });
+
+    item = { ...menuIngredients[1] };
+
+    expect(
+      menuReducer(
+        { ...initialStateMenu, items },
+        {
+          type: DECREASE_MENU_ITEM_COUNT,
+          payload: { id: item._id },
+        }
+      )
+    ).toEqual({
+      ...initialStateMenu,
+      items: [{ ...items[0] }, { ...item, count: 0 }],
+    });
+
+    items.push({ _id: "", type: "bun", count: 0 });
+
+    expect(
+      menuReducer(
+        { ...initialStateMenu, items },
+        {
+          type: DECREASE_MENU_ITEM_COUNT,
+          payload: { id: item._id },
+        }
+      )
+    ).toEqual({
+      ...initialStateMenu,
+      items: [{ ...items[0] }, { ...item, count: 0 }, { ...items[2] }],
     });
   });
 });
@@ -296,7 +434,13 @@ describe("Order reducer", () => {
   it("Should handle ADD_ORDER_ITEM", () => {
     const itemUnlocked = {
       ...orderItemsUnlocked[0],
+      type: menuIngredients[0].type,
       price: menuIngredients[0].price,
+    };
+    const itemLocked = {
+      ...orderItemsLocked[0],
+      type: menuIngredients[1].type,
+      price: menuIngredients[1].price,
     };
     expect(
       orderReducer(
@@ -314,6 +458,24 @@ describe("Order reducer", () => {
       items: {
         ...initialStateOrder.items,
         unlocked: [...orderItemsUnlocked],
+      },
+    });
+    expect(
+      orderReducer(
+        {
+          ...initialStateOrder,
+        },
+        { type: ADD_ORDER_ITEM, payload: itemLocked }
+      )
+    ).toEqual({
+      ...initialStateOrder,
+      total: {
+        ...initialStateOrder.total,
+        locked: itemLocked.price * 2,
+      },
+      items: {
+        ...initialStateOrder.items,
+        locked: [...orderItemsLocked],
       },
     });
   });
@@ -341,6 +503,32 @@ describe("Order reducer", () => {
       )
     ).toEqual({
       ...initialStateOrder,
+    });
+    expect(
+      orderReducer(
+        {
+          ...initialStateOrder,
+          total: {
+            ...initialStateOrder.total,
+            unlocked: itemUnlocked.price,
+          },
+          items: {
+            ...initialStateOrder.items,
+            unlocked: [...orderItemsUnlocked],
+          },
+        },
+        { type: REMOVE_ORDER_ITEM, payload: { ...itemUnlocked, index: -1 } }
+      )
+    ).toEqual({
+      ...initialStateOrder,
+      total: {
+        ...initialStateOrder.total,
+        unlocked: itemUnlocked.price,
+      },
+      items: {
+        ...initialStateOrder.items,
+        unlocked: [...orderItemsUnlocked],
+      },
     });
   });
 });

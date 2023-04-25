@@ -8,8 +8,21 @@ describe("Burger constructor page", () => {
   it("Should show menu ingredient details", () => {
     cy.contains("Конструктор");
     cy.contains("Соберите бургер");
-    cy.get("[class^=burger-ingredient_link]").first().click();
-    cy.get("[class^=modal_wrapper]").contains("Детали ингредиента");
+    cy.get("[class^=burger-ingredient_link]").first().as("ingredient");
+    cy.get("@ingredient")
+      .find("h3")
+      .invoke("text")
+      .then((namePage) => {
+        cy.get("@ingredient").click();
+        cy.get("[class^=modal_wrapper]").as("modal");
+        cy.get("@modal").contains("Детали ингредиента");
+        cy.get("@modal")
+          .find("h3")
+          .invoke("text")
+          .should((nameModal) => {
+            expect(namePage).to.eq(nameModal);
+          });
+      });
     cy.get("[class^=modal_control]").click();
     cy.get("[class^=modal_wrapper]").should("not.exist");
   });
